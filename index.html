@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WAVE - Digital Marketing & Web Agency</title>
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- FontAwesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --bg-color: #030712;
+        --card-bg: rgba(17, 24, 39, 0.6);
+        --card-border: rgba(255, 255, 255, 0.08);
+        --primary-glow: #0ea5e9;
+        --accent-glow: #38bdf8;
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --gradient-blue: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Outfit", sans-serif;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        overflow-x: hidden;
+        background-image:
+          radial-gradient(
+            circle at 80% 15%,
+            rgba(14, 165, 233, 0.15) 0%,
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 20% 80%,
+            rgba(37, 99, 235, 0.1) 0%,
+            transparent 40%
+          );
+        background-attachment: fixed;
+      }
+
+      /* Navbar */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 5%;
+        background: rgba(3, 7, 18, 0.8);
+        backdrop-filter: blur(12px);
+        z-index: 1000;
+        border-bottom: 1px solid var(--card-border);
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        color: var(--text-main);
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 30px;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--text-muted);
+        font-size: 14px;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: #38bdf8;
+      }
+
+      .nav-btn {
+        background: var(--gradient-blue);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .nav-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(14, 165, 233, 0.5);
+      }
+
+      .logo {
+        span {
+          background: var(--gradient-blue);
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+      }
+
+      header.hero {
+        padding: 160px 5% 80px 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        background-image: url("./image.png");
+        margin-top: 6rem;
+      }
+
+      .hero-content {
+        max-width: 600px;
+      }
+
+      .hero-tag {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: var(--accent-glow);
+        text-transform: uppercase;
+        margin-bottom: 15px;
+      }
+
+      .hero-content h1 {
+        font-size: 80px;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 20px;
+        background: linear-gradient(to right, #ffffff, #94a3b8);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero-content h1 span {
+        background: var(--gradient-blue);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .hero-content p {
+        color: var(--text-muted);
+        font-size: 25px;
+        line-height: 1.6;
+        margin-bottom: 35px;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .btn-primary {
+        background: var(--gradient-blue);
+        color: white;
+        padding: 14px 28px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        border: 1px solid var(--card-border);
+        padding: 14px 28px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary:hover,
+      .btn-secondary:hover {
+        transform: translateY(-3px);
+      }
+
+      /* Services Grid Section */
+      section.services {
+        padding: 80px 5%;
+      }
+
+      .section-header {
+        margin-bottom: 50px;
+      }
+
+      .section-header h4 {
+        color: var(--accent-glow);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+      }
+
+      .section-header h2 {
+        font-size: 38px;
+        font-weight: 700;
+        margin-bottom: 15px;
+      }
+
+      .section-header p {
+        color: var(--text-muted);
+        font-size: 15px;
+        max-width: 500px;
+      }
+
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 25px;
+      }
+
+      .service-card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        padding: 35px;
+        border-radius: 20px;
+        backdrop-filter: blur(16px);
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .service-card:hover {
+        border-color: rgba(14, 165, 233, 0.4);
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      .service-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(14, 165, 233, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent-glow);
+        font-size: 22px;
+        margin-bottom: 25px;
+      }
+
+      .service-card h3 {
+        font-size: 20px;
+        margin-bottom: 12px;
+        font-weight: 600;
+      }
+
+      .service-card p {
+        color: var(--text-muted);
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 25px;
+      }
+
+      .card-link {
+        color: var(--text-main);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: color 0.3s ease;
+      }
+
+      .card-link:hover {
+        color: var(--accent-glow);
+      }
+
+      section.pricing {
+        padding: 80px 5%;
+        background-image: url(./sea.jpeg);
+      }
+
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 25px;
+        margin-top: 50px;
+      }
+
+      .pricing-card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        padding: 40px;
+        border-radius: 20px;
+        backdrop-filter: blur(16px);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .pricing-card.popular {
+        border: 1px solid var(--primary-glow);
+        background: linear-gradient(
+          180deg,
+          rgba(14, 165, 233, 0.05) 0%,
+          rgba(17, 24, 39, 0.8) 100%
+        );
+      }
+
+      .popular-badge {
+        position: absolute;
+        top: -12px;
+        right: 30px;
+        background: var(--gradient-blue);
+        color: white;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 20px;
+        letter-spacing: 1px;
+      }
+
+      .pricing-card h3 {
+        font-size: 22px;
+        margin-bottom: 10px;
+      }
+
+      .pricing-card > p {
+        color: var(--text-muted);
+        font-size: 14px;
+        margin-bottom: 25px;
+      }
+
+      .pricing-features {
+        list-style: none;
+        margin-bottom: 35px;
+      }
+
+      .pricing-features li {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .pricing-features li i {
+        color: var(--accent-glow);
+      }
+
+      footer {
+        padding: 60px 5%;
+        border-top: 1px solid var(--card-border);
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 14px;
+      }
+
+      @media (max-width: 968px) {
+        .hero-content h1 {
+          font-size: 42px;
+        }
+        .nav-links {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="logo"><span>W</span>AVE</div>
+      <ul class="nav-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#pricing">Packages</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+      <button class="nav-btn">Book a Free Consultation →</button>
+    </nav>
+
+    <header class="hero">
+      <div class="hero-content">
+        <span class="hero-tag">Digital Marketing & Web Agency</span>
+
+        <h1 style="background-color: rgba(255, 255, 255, 0)">
+          Go <span>Beyond.</span>
+        </h1>
+
+        <p>
+          We help businesses grow through strategy, content, paid ads and
+          high-performing websites — all connected for real results.
+        </p>
+        <div class="hero-actions">
+          <a href="#" class="btn-primary"
+            >Book a Free Consultation <i class="fa-solid fa-arrow-right"></i
+          ></a>
+          <a href="#pricing" class="btn-secondary"
+            ><i class="fa-solid fa-play"></i> Let's Build Your Next Wave</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <section class="services" id="services">
+      <div class="section-header">
+        <h4>Our Services</h4>
+        <h2>Everything You Need to Grow Online</h2>
+        <p>
+          From strategy to execution, we provide end-to-end digital solutions
+          that help your business attract, convert and scale.
+        </p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fa-solid fa-bag-shopping"></i>
+          </div>
+          <h3>Shopify Store Development</h3>
+          <p>High-converting, scalable online stores built for growth.</p>
+          <a href="#" class="card-link"
+            >Explore Service <i class="fa-solid fa-arrow-right"></i
+          ></a>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fa-solid fa-laptop-code"></i>
+          </div>
+          <h3>Website Optimization</h3>
+          <p>Faster, smarter, higher converting websites.</p>
+          <a href="#" class="card-link"
+            >Explore Service <i class="fa-solid fa-arrow-right"></i
+          ></a>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fa-solid fa-share-nodes"></i>
+          </div>
+          <h3>Social Media Marketing</h3>
+          <p>Strategic content that builds brand and drives sales.</p>
+          <a href="#" class="card-link"
+            >Explore Service <i class="fa-solid fa-arrow-right"></i
+          ></a>
+        </div>
+        <div class="service-card">
+          <div class="service-icon"><i class="fa-solid fa-chart-line"></i></div>
+          <h3>Paid Advertising</h3>
+          <p>Result-driven ad campaigns on Meta, Google, TikTok and more.</p>
+          <a href="#" class="card-link"
+            >Explore Service <i class="fa-solid fa-arrow-right"></i
+          ></a>
+        </div>
+        <div class="service-card">
+          <div class="service-icon"><i class="fa-solid fa-lightbulb"></i></div>
+          <h3>Content & Creative Strategy</h3>
+          <p>Scroll-stopping content with a clear strategy.</p>
+          <a href="#" class="card-link"
+            >Explore Service <i class="fa-solid fa-arrow-right"></i
+          ></a>
+        </div>
+        <div class="service-card">
+          <div class="service-icon"><i class="fa-solid fa-user-group"></i></div>
+          <h3>Brand & Growth Support</h3>
+          <p>Ongoing support to scale your brand long-term.</p>
+          <a href="#" class="card-link"
+            >Explore Service <i class="fa-solid fa-arrow-right"></i
+          ></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="pricing" id="pricing">
+      <div class="section-header">
+        <h4>Our Packages</h4>
+        <h2>Flexible Plans for Every Stage</h2>
+        <p>
+          Whether you're just getting started or ready to scale, we have a plan
+          that fits your goals.
+        </p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3>Start</h3>
+          <p>Perfect for small businesses taking their first step online.</p>
+          <ul class="pricing-features">
+            <li><i class="fa-solid fa-check"></i> Marketing Strategy  </li>
+            <li><i class="fa-solid fa-check"></i> Content Strategy </li>
+            <li><i class="fa-solid fa-check"></i> Social Media Strategy </li>
+            <li><i class="fa-solid fa-check"></i> 6 Designs </li>
+            <li><i class="fa-solid fa-check"></i> 3 Reels </li>
+            <li><i class="fa-solid fa-check"></i> 3 Canpaigns / Month</li>
+            <li><i class="fa-solid fa-check"></i> Conversion Landing Page </li>
+            <li><i class="fa-solid fa-check"></i> Basic analysis Report</li>
+          </ul>
+          <a
+            href="#"
+            class="btn-secondary"
+            style="width: 100%; justify-content: center"
+            >Get Started <i class="fa-solid fa-arrow-right"></i
+          ></a>
+        </div>
+        <div class="pricing-card popular">
+          <span class="popular-badge">Most Popular</span>
+          <h3>Standard</h3>
+          <p>A complete growth system for serious businesses.</p>
+          <ul class="pricing-features">
+            <li><i class="fa-solid fa-check"></i> Advanced strategy</li>
+            <li><i class="fa-solid fa-check"></i> Content & creative</li>
+            <li><i class="fa-solid fa-check"></i> Paid ad management</li>
+            <li><i class="fa-solid fa-check"></i> Performance tracking</li>
+          </ul>
+          <a
+            href="#"
+            class="btn-primary"
+            style="width: 100%; justify-content: center"
+            >Choose Standard <i class="fa-solid fa-arrow-right"></i
+          ></a>
+        </div>
+        <div class="pricing-card">
+          <h3>Pro</h3>
+          <p>For established brands ready to scale faster.</p>
+          <ul class="pricing-features">
+            <li><i class="fa-solid fa-check"></i> Full-funnel strategy</li>
+            <li>
+              <i class="fa-solid fa-check"></i> Premium content & creatives
+            </li>
+            <li><i class="fa-solid fa-check"></i> Multi-platform ads</li>
+            <li><i class="fa-solid fa-check"></i> Dedicated account manager</li>
+          </ul>
+          <a
+            href=""
+            class="btn-secondary"
+            style="width: 100%; justify-content: center"
+            >Choose Pro <i class="fa-solid fa-arrow-right"></i
+          ></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2026 WAVE Digital Agency. All rights reserved.</p>
+    </footer>
+
+    <script>
+      // Smooth interactive logic or scroll animations can be placed here if needed
+      console.log("WAVE Agency Landing Page Loaded Successfully.");
+    </script>
+  </body>
+</html>
