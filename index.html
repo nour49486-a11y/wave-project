@@ -4,16 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WAVE - Digital Marketing & Web Agency</title>
-    <!-- Google Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <!-- FontAwesome Icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+
     <style>
       :root {
         --bg-color: #030712;
@@ -24,6 +29,7 @@
         --text-main: #f8fafc;
         --text-muted: #94a3b8;
         --gradient-blue: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
         -webkit-background-clip: text;
         background-clip: text;
       }
@@ -54,7 +60,174 @@
         background-attachment: fixed;
       }
 
-      /* Navbar */
+      body.is-loading {
+        overflow: hidden;
+      }
+
+      .preloader {
+        position: fixed;
+        inset: 0;
+        z-index: 3000;
+        background: #030712;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 28px;
+        transition:
+          opacity 0.8s var(--ease),
+          visibility 0.8s var(--ease),
+          transform 0.8s var(--ease);
+      }
+
+      .preloader.hide {
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(1.06);
+      }
+
+      .preloader-logo {
+        width: 110px;
+        height: 110px;
+        animation: loaderPulse 1.6s ease-in-out infinite;
+      }
+
+      .preloader-bar {
+        width: 160px;
+        height: 3px;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+      }
+
+      .preloader-bar span {
+        display: block;
+        height: 100%;
+        width: 40%;
+        border-radius: 3px;
+        background: var(--gradient-blue);
+        animation: loaderSlide 1.2s ease-in-out infinite;
+      }
+
+      @keyframes loaderPulse {
+        0%,
+        100% {
+          transform: scale(0.92);
+          filter: drop-shadow(0 0 10px rgba(14, 165, 233, 0.35));
+        }
+        50% {
+          transform: scale(1.06);
+          filter: drop-shadow(0 0 28px rgba(56, 189, 248, 0.8));
+        }
+      }
+
+      @keyframes loaderSlide {
+        0% {
+          transform: translateX(-120%);
+        }
+        100% {
+          transform: translateX(380%);
+        }
+      }
+
+      .scroll-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: 100%;
+        z-index: 2000;
+        background: var(--gradient-blue);
+        transform-origin: left;
+        transform: scaleX(0);
+        box-shadow: 0 0 12px rgba(14, 165, 233, 0.8);
+      }
+
+      .pkg-counter {
+        cursor: default;
+        opacity: 0.55;
+        transition: opacity 0.2s;
+      }
+      .pkg-counter.active {
+        opacity: 1;
+      }
+      .pkg-counter .pkg-name {
+        flex: 1;
+      }
+      .unit-price {
+        display: block;
+        font-size: 12px;
+        opacity: 0.6;
+      }
+
+      .qty {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-inline: 12px;
+      }
+      .qty-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        font-size: 18px;
+        line-height: 1;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .qty-btn:hover {
+        border-color: #1ea7ff;
+        color: #1ea7ff;
+      }
+      .qty-btn:active {
+        transform: scale(0.88);
+      }
+      .qty-input {
+        width: 48px;
+        height: 30px;
+        text-align: center;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
+        color: #fff;
+        font: inherit;
+        -moz-appearance: textfield;
+      }
+      .qty-input::-webkit-outer-spin-button,
+      .qty-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      .qty-input:focus {
+        outline: none;
+        border-color: #1ea7ff;
+      }
+      .pkg-counter .line-price {
+        min-width: 90px;
+        text-align: right;
+      }
+
+      .pkg-counter.active .pkg-name {
+        color: #fff;
+        font-weight: 500;
+      }
+      .pkg-counter.active .unit-price {
+        font-weight: 400;
+      }
+      .pkg-counter.active .egy {
+        color: #1ea7ff;
+      }
+
+      @media (max-width: 600px) {
+        .pkg-counter {
+          flex-wrap: wrap;
+          row-gap: 8px;
+        }
+      }
+
       nav {
         position: fixed;
         top: 0;
@@ -68,6 +241,26 @@
         backdrop-filter: blur(12px);
         z-index: 1000;
         border-bottom: 1px solid var(--card-border);
+        transition:
+          padding 0.5s var(--ease),
+          background 0.5s var(--ease),
+          box-shadow 0.5s var(--ease),
+          transform 0.6s var(--ease);
+      }
+
+      nav.scrolled {
+        padding: 8px 5%;
+        background: rgba(3, 7, 18, 0.92);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+      }
+
+      nav.scrolled .wordmark {
+        height: 44px;
+      }
+
+      nav.scrolled .svglogo {
+        width: 48px;
+        height: 48px;
       }
 
       .logo {
@@ -80,10 +273,19 @@
       .nav-links {
         display: flex;
         list-style: none;
-        gap: 30px;
+        gap: 50px;
+      }
+      .nav-links {
+        .licust {
+          width: 140px;
+          a {
+            width: 180px;
+          }
+        }
       }
 
       .nav-links a {
+        position: relative;
         text-decoration: none;
         color: var(--text-muted);
         font-size: 14px;
@@ -91,7 +293,28 @@
         transition: color 0.3s ease;
       }
 
-      .nav-links a:hover {
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        width: 100%;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--gradient-blue);
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.4s var(--ease);
+      }
+
+      .nav-links a:hover::after,
+      .nav-links a.current::after {
+        transform: scaleX(1);
+        transform-origin: left;
+      }
+
+      .nav-links a:hover,
+      .nav-links a.current {
         color: #38bdf8;
       }
 
@@ -100,6 +323,8 @@
         color: white;
         border: none;
         padding: 10px 20px;
+        text-decoration: none;
+
         border-radius: 30px;
         font-size: 14px;
         font-weight: 600;
@@ -113,9 +338,14 @@
       .nav-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 25px rgba(14, 165, 233, 0.5);
+        text-decoration: none;
       }
 
       .logo {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
         span {
           background: var(--gradient-blue);
           -webkit-background-clip: text;
@@ -130,15 +360,78 @@
         justify-content: space-between;
         align-items: center;
         position: relative;
+        overflow: hidden;
+        min-height: 88vh;
         background-image: url("./image.png");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
         margin-top: 6rem;
+      }
+
+      .hero-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(70px);
+        pointer-events: none;
+        will-change: transform;
+      }
+
+      .hero-orb.o1 {
+        width: 420px;
+        height: 420px;
+        right: 8%;
+        top: 8%;
+        background: rgba(14, 165, 233, 0.28);
+        animation: floatA 11s ease-in-out infinite;
+      }
+
+      .hero-orb.o2 {
+        width: 320px;
+        height: 320px;
+        right: 32%;
+        bottom: 4%;
+        background: rgba(37, 99, 235, 0.25);
+        animation: floatB 14s ease-in-out infinite;
+      }
+
+      .hero-orb.o3 {
+        width: 220px;
+        height: 220px;
+        left: 6%;
+        top: 12%;
+        background: rgba(56, 189, 248, 0.14);
+        animation: floatA 16s ease-in-out infinite reverse;
+      }
+
+      @keyframes floatA {
+        0%,
+        100% {
+          transform: translate3d(0, 0, 0) scale(1);
+        }
+        50% {
+          transform: translate3d(-40px, 50px, 0) scale(1.12);
+        }
+      }
+
+      @keyframes floatB {
+        0%,
+        100% {
+          transform: translate3d(0, 0, 0) scale(1);
+        }
+        50% {
+          transform: translate3d(50px, -40px, 0) scale(0.9);
+        }
       }
 
       .hero-content {
         max-width: 600px;
+        position: relative;
+        z-index: 2;
       }
 
       .hero-tag {
+        display: inline-block;
         font-size: 12px;
         font-weight: 700;
         letter-spacing: 2px;
@@ -159,11 +452,31 @@
       }
 
       .hero-content h1 span {
-        background: var(--gradient-blue);
+        background: linear-gradient(
+          135deg,
+          #0ea5e9 0%,
+          #2563eb 40%,
+          #38bdf8 70%,
+          #0ea5e9 100%
+        );
+        background-size: 250% 250%;
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
+        display: inline-block;
+        animation: shimmer 5s ease-in-out infinite;
       }
+
+      @keyframes shimmer {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
       .hero-content p {
         color: var(--text-muted);
         font-size: 25px;
@@ -175,6 +488,50 @@
         display: flex;
         gap: 20px;
         align-items: center;
+      }
+
+      body.is-loading .hero-anim,
+      body.is-loading nav {
+        animation: none;
+      }
+
+      .hero-anim {
+        opacity: 0;
+        transform: translateY(40px);
+        filter: blur(8px);
+      }
+
+      body.ready .hero-anim {
+        animation: heroIn 1.1s var(--ease) forwards;
+      }
+
+      body.ready .hero-anim:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      body.ready .hero-anim:nth-child(2) {
+        animation-delay: 0.28s;
+      }
+      body.ready .hero-anim:nth-child(3) {
+        animation-delay: 0.46s;
+      }
+      body.ready .hero-anim:nth-child(4) {
+        animation-delay: 0.64s;
+      }
+
+      @keyframes heroIn {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+          filter: blur(0);
+        }
+      }
+
+      nav {
+        transform: translateY(-100%);
+      }
+
+      body.ready nav {
+        transform: translateY(0);
       }
 
       .btn-primary {
@@ -190,6 +547,47 @@
         gap: 10px;
         box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
         transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-primary::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -80%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+          100deg,
+          transparent,
+          rgba(255, 255, 255, 0.35),
+          transparent
+        );
+        transform: skewX(-20deg);
+        animation: sweep 4s ease-in-out infinite;
+      }
+
+      @keyframes sweep {
+        0%,
+        55% {
+          left: -80%;
+        }
+        100% {
+          left: 160%;
+        }
+      }
+
+      .btn-primary i,
+      .btn-secondary i,
+      .card-link i {
+        transition: transform 0.35s var(--ease);
+      }
+
+      .btn-primary:hover i,
+      .btn-secondary:hover i,
+      .card-link:hover i {
+        transform: translateX(5px);
       }
 
       .btn-secondary {
@@ -208,12 +606,66 @@
         transition: all 0.3s ease;
       }
 
+      .btn-secondary:hover {
+        border-color: rgba(14, 165, 233, 0.5);
+        box-shadow: 0 10px 30px rgba(14, 165, 233, 0.18);
+      }
+
       .btn-primary:hover,
       .btn-secondary:hover {
         transform: translateY(-3px);
       }
 
-      /* Services Grid Section */
+      .scroll-hint {
+        position: absolute;
+        left: 50%;
+        bottom: 26px;
+        width: 26px;
+        height: 42px;
+        margin-left: -13px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        opacity: 0;
+        z-index: 2;
+      }
+
+      body.ready .scroll-hint {
+        animation: hintIn 1s ease 1.4s forwards;
+      }
+
+      @keyframes hintIn {
+        to {
+          opacity: 1;
+        }
+      }
+
+      .scroll-hint::after {
+        content: "";
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        width: 4px;
+        height: 8px;
+        margin-left: -2px;
+        border-radius: 4px;
+        background: var(--accent-glow);
+        animation: wheel 1.8s ease-in-out infinite;
+      }
+
+      @keyframes wheel {
+        0% {
+          opacity: 0;
+          transform: translateY(0);
+        }
+        30% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+      }
+
       section.services {
         padding: 80px 5%;
       }
@@ -259,6 +711,24 @@
         overflow: hidden;
       }
 
+      .service-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          400px circle at var(--mx, 50%) var(--my, 0%),
+          rgba(14, 165, 233, 0.16),
+          transparent 45%
+        );
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        pointer-events: none;
+      }
+
+      .service-card:hover::before {
+        opacity: 1;
+      }
+
       .service-card:hover {
         border-color: rgba(14, 165, 233, 0.4);
         transform: translateY(-5px);
@@ -276,6 +746,16 @@
         color: var(--accent-glow);
         font-size: 22px;
         margin-bottom: 25px;
+        transition:
+          transform 0.5s var(--ease),
+          background 0.4s ease,
+          color 0.4s ease;
+      }
+
+      .service-card:hover .service-icon {
+        transform: rotate(-8deg) scale(1.12);
+        background: var(--gradient-blue);
+        color: #fff;
       }
 
       .service-card h3 {
@@ -308,7 +788,10 @@
 
       section.pricing {
         padding: 80px 5%;
-        background-image: url(./sea.jpeg);
+        background-image: url("./sea.jpeg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
       }
 
       .pricing-grid {
@@ -337,6 +820,18 @@
           rgba(14, 165, 233, 0.05) 0%,
           rgba(17, 24, 39, 0.8) 100%
         );
+        box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4);
+        animation: popularGlow 3.2s ease-in-out infinite;
+      }
+
+      @keyframes popularGlow {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(14, 165, 233, 0);
+        }
+        50% {
+          box-shadow: 0 0 45px 2px rgba(14, 165, 233, 0.25);
+        }
       }
 
       .popular-badge {
@@ -389,43 +884,757 @@
         font-size: 14px;
       }
 
+      .whatsapp-float {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: 60px;
+        height: 60px;
+        background-color: #25d366;
+        color: #ffffff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        text-decoration: none;
+        box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
+        z-index: 1100;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+        animation: whatsapp-pulse 2s infinite;
+      }
+
+      .whatsapp-float:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 28px rgba(37, 211, 102, 0.65);
+      }
+
+      @keyframes whatsapp-pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6);
+        }
+        70% {
+          box-shadow: 0 0 0 18px rgba(37, 211, 102, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+        }
+      }
+
       @media (max-width: 968px) {
         .hero-content h1 {
           font-size: 42px;
         }
+        .hero-content p {
+          font-size: 19px;
+        }
         .nav-links {
           display: none;
+        }
+        .whatsapp-float {
+          width: 52px;
+          height: 52px;
+          font-size: 28px;
+          bottom: 18px;
+          right: 18px;
+        }
+      }
+
+      .svglogo {
+        width: 60px;
+        height: 60px;
+        transition:
+          width 0.5s var(--ease),
+          height 0.5s var(--ease);
+      }
+
+      .wordmark {
+        height: 56px;
+        width: auto;
+        transition: height 0.5s var(--ease);
+      }
+      .egy {
+        color: #0ea5e9;
+        margin-left: 80px;
+      }
+
+      li {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+
+        .spans {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+        }
+      }
+      .total {
+        display: flex;
+        flex-direction: row-reverse;
+        gap: 2rem;
+        margin-top: -2rem;
+        margin-bottom: 0.9rem;
+      }
+
+      section.pricing.pricing-single {
+        background: none;
+        padding-inline: 10%;
+      }
+
+      .pricing-single .section-header {
+        text-align: center;
+      }
+
+      .pricing-single .section-header p {
+        margin-inline: auto;
+      }
+
+      .pricing-single .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+
+      @media (max-width: 768px) {
+        section.pricing.pricing-single {
+          padding-inline: 4%;
+        }
+      }
+
+      .pkg-item {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .pkg-check {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .pkg-box {
+        flex: 0 0 auto;
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        border: 1.5px solid rgba(255, 255, 255, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+
+      .pricing-features .pkg-box i {
+        font-size: 11px;
+        color: #ffffff;
+        opacity: 0;
+        transform: scale(0.6);
+        transition: all 0.2s ease;
+      }
+
+      .pkg-check:checked + .pkg-box {
+        background: var(--gradient-blue);
+        border-color: transparent;
+        box-shadow: 0 0 12px rgba(14, 165, 233, 0.45);
+      }
+
+      .pkg-check:checked + .pkg-box i {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .pkg-check:focus-visible + .pkg-box {
+        outline: 2px solid var(--accent-glow);
+        outline-offset: 2px;
+      }
+
+      .pkg-item:hover .pkg-box {
+        border-color: var(--accent-glow);
+      }
+
+      .pkg-name {
+        flex: 1;
+        transition:
+          opacity 0.2s ease,
+          color 0.2s ease;
+      }
+
+      .pkg-item .egy {
+        margin-left: 0;
+        white-space: nowrap;
+        transition: opacity 0.2s ease;
+      }
+
+      .pkg-check:not(:checked) ~ .pkg-name,
+      .pkg-check:not(:checked) ~ .egy {
+        opacity: 0.45;
+      }
+
+      .pkg-check:checked ~ .pkg-name {
+        color: var(--text-main);
+      }
+
+      .pricing-single .total .large {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+
+      .pricing-single .total .small {
+        align-self: center;
+        font-size: 14px;
+        color: var(--text-muted);
+      }
+
+      .is-disabled {
+        opacity: 0.45;
+        pointer-events: none;
+      }
+
+      section.social {
+        padding: 80px 5%;
+
+        background-image:
+          linear-gradient(rgba(3, 7, 18, 0.45), rgba(3, 7, 18, 0.7)),
+          url("./socail.jpeg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .social-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+      }
+
+      .social-card {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 28px 30px;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 20px;
+        backdrop-filter: blur(16px);
+        text-decoration: none;
+        color: var(--text-main);
+        transition: all 0.4s ease;
+      }
+
+      .social-card:hover {
+        border-color: rgba(14, 165, 233, 0.4);
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      .social-card:hover .social-icon {
+        transform: scale(1.1) rotate(-6deg);
+      }
+
+      .social-icon {
+        flex: 0 0 auto;
+        width: 54px;
+        height: 54px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        color: #ffffff;
+        transition: transform 0.5s var(--ease);
+      }
+
+      .social-icon.facebook {
+        background: #1877f2;
+      }
+      .social-icon.instagram {
+        background: radial-gradient(
+          circle at 30% 107%,
+          #fdf497 0%,
+          #fdf497 5%,
+          #fd5949 45%,
+          #d6249f 60%,
+          #285aeb 90%
+        );
+      }
+      .social-icon.tiktok {
+        background: #000000;
+      }
+      .social-icon.tiktok i {
+        text-shadow:
+          2px 2px 0 #fe2c55,
+          -2px -2px 0 #25f4ee;
+      }
+      .social-icon.linkedin {
+        background: #0a66c2;
+      }
+      .social-icon.youtube {
+        background: #ff0000;
+      }
+      .social-icon.whatsapp {
+        background: #25d366;
+      }
+
+      .social-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .social-info h3 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      .social-info p {
+        color: var(--text-muted);
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .social-arrow {
+        flex: 0 0 auto;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: var(--text-main);
+        transition: all 0.3s ease;
+      }
+
+      .social-card:hover .social-arrow {
+        background: var(--gradient-blue);
+        border-color: transparent;
+        transform: rotate(-45deg);
+      }
+
+      .selected-list {
+        list-style: none;
+        margin: 0 0 18px;
+        padding: 16px 0 0;
+        border-top: 1px solid var(--card-border);
+      }
+
+      .selected-list li {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: var(--text-main);
+        animation: itemIn 0.45s var(--ease);
+      }
+
+      @keyframes itemIn {
+        from {
+          opacity: 0;
+          transform: translateX(-14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .selected-list .sel-price {
+        color: var(--accent-glow);
+        white-space: nowrap;
+      }
+
+      .selected-list .sel-empty {
+        justify-content: center;
+        color: var(--text-muted);
+      }
+
+      .pricing-single .total {
+        margin-top: 0;
+      }
+
+      .pricing-single .pricing-features {
+        margin-bottom: 20px;
+      }
+
+      #totalPrice.bump {
+        animation: bump 0.45s var(--ease);
+      }
+
+      @keyframes bump {
+        0% {
+          transform: scale(1);
+        }
+        40% {
+          transform: scale(1.18);
+          color: var(--accent-glow);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(60px);
+        filter: blur(6px);
+        transition:
+          opacity 1s var(--ease),
+          transform 1s var(--ease),
+          filter 1s var(--ease);
+        transition-delay: var(--d, 0s);
+        will-change: opacity, transform;
+      }
+
+      .reveal.from-left {
+        transform: translateX(-70px);
+      }
+
+      .reveal.from-right {
+        transform: translateX(70px);
+      }
+
+      .reveal.zoom {
+        transform: scale(0.88) translateY(30px);
+      }
+
+      .reveal.in {
+        opacity: 1;
+        transform: none;
+        filter: blur(0);
+      }
+
+      .service-card.reveal.in,
+      .social-card.reveal.in,
+      .pricing-card.reveal.in {
+        transition:
+          opacity 1s var(--ease),
+          transform 1s var(--ease),
+          filter 1s var(--ease),
+          border-color 0.4s ease,
+          box-shadow 0.4s ease;
+        transition-delay: var(--d, 0s), var(--d, 0s), var(--d, 0s), 0s, 0s;
+      }
+
+      .service-card.reveal.in:hover,
+      .social-card.reveal.in:hover {
+        transform: translateY(-5px);
+        transition-delay: 0s;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+        .reveal,
+        .hero-anim {
+          opacity: 1;
+          transform: none;
+          filter: none;
+        }
+        nav {
+          transform: none;
         }
       }
     </style>
   </head>
-  <body>
-    <nav>
-      <div class="logo"><span>W</span>AVE</div>
+  <body class="is-loading">
+    <div class="preloader" id="preloader">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="200 340 920 520"
+        class="preloader-logo"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient
+            id="plFill"
+            x1="200"
+            y1="820"
+            x2="1100"
+            y2="400"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop offset="0%" stop-color="#1f9bff" />
+            <stop offset="40%" stop-color="#4fd2ff" />
+            <stop offset="65%" stop-color="#6fe3ff" />
+            <stop offset="100%" stop-color="#2aa8ff" />
+          </linearGradient>
+        </defs>
+        <g fill="url(#plFill)">
+          <path
+            d="M347,541
+             C430,440 540,360 650,357
+             C760,355 820,430 870,520
+             C905,585 940,650 972,683
+             C980,690 982,688 981,692
+             C975,697 955,694 935,688
+             C895,676 865,640 830,585
+             C785,512 735,430 620,424
+             C520,420 420,470 347,541 Z"
+          />
+          <path
+            d="M210,820
+             C300,700 420,565 565,562
+             C680,560 740,640 800,725
+             C850,790 900,810 960,808
+             C1020,806 1075,775 1105,740
+             C1070,782 1000,848 905,848
+             C820,848 760,800 710,730
+             C650,650 590,648 500,650
+             C380,655 280,730 210,820 Z"
+          />
+        </g>
+      </svg>
+      <div class="preloader-bar"><span></span></div>
+    </div>
+
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <nav id="mainNav">
+      <div class="logo">
+        <div class="icon">
+          <span
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 1254 1254"
+              width="1254"
+              height="1254"
+              role="img"
+              aria-label="Wave logo"
+              class="svglogo"
+            >
+              <defs>
+                <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+                  <stop offset="0%" stop-color="#03112a" />
+                  <stop offset="100%" stop-color="#010612" />
+                </radialGradient>
+
+                <linearGradient
+                  id="waveFill"
+                  x1="200"
+                  y1="820"
+                  x2="1100"
+                  y2="400"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop offset="0%" stop-color="#1f9bff" />
+                  <stop offset="40%" stop-color="#4fd2ff" />
+                  <stop offset="65%" stop-color="#6fe3ff" />
+                  <stop offset="100%" stop-color="#2aa8ff" />
+                </linearGradient>
+
+                <filter
+                  id="glow"
+                  x="-30%"
+                  y="-30%"
+                  width="160%"
+                  height="160%"
+                  color-interpolation-filters="sRGB"
+                >
+                  <feGaussianBlur
+                    in="SourceGraphic"
+                    stdDeviation="22"
+                    result="blurWide"
+                  />
+                  <feGaussianBlur
+                    in="SourceGraphic"
+                    stdDeviation="8"
+                    result="blurTight"
+                  />
+                  <feMerge>
+                    <feMergeNode in="blurWide" />
+                    <feMergeNode in="blurTight" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <g filter="url(#glow)" fill="url(#waveFill)">
+                <path
+                  d="M347,541
+             C430,440 540,360 650,357
+             C760,355 820,430 870,520
+             C905,585 940,650 972,683
+             C980,690 982,688 981,692
+             C975,697 955,694 935,688
+             C895,676 865,640 830,585
+             C785,512 735,430 620,424
+             C520,420 420,470 347,541 Z"
+                />
+
+                <path
+                  d="M210,820
+             C300,700 420,565 565,562
+             C680,560 740,640 800,725
+             C850,790 900,810 960,808
+             C1020,806 1075,775 1105,740
+             C1070,782 1000,848 905,848
+             C820,848 760,800 710,730
+             C650,650 590,648 500,650
+             C380,655 280,730 210,820 Z"
+                />
+              </g></svg
+          ></span>
+        </div>
+
+        <svg
+          class="wordmark"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="130 220 1020 430"
+          role="img"
+          aria-label="WAVE — Go Beyond"
+        >
+          <defs>
+            <linearGradient
+              id="wmWave"
+              x1="200"
+              y1="820"
+              x2="1100"
+              y2="400"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop offset="0%" stop-color="#1f9bff" />
+              <stop offset="40%" stop-color="#4fd2ff" />
+              <stop offset="65%" stop-color="#6fe3ff" />
+              <stop offset="100%" stop-color="#2aa8ff" />
+            </linearGradient>
+
+            <filter
+              id="wmGlow"
+              x="-20%"
+              y="-30%"
+              width="140%"
+              height="160%"
+              color-interpolation-filters="sRGB"
+            >
+              <feGaussianBlur
+                in="SourceGraphic"
+                stdDeviation="14"
+                result="blurWide"
+              />
+              <feGaussianBlur
+                in="SourceGraphic"
+                stdDeviation="5"
+                result="blurTight"
+              />
+              <feMerge>
+                <feMergeNode in="blurWide" />
+                <feMergeNode in="blurTight" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          <g filter="url(#wmGlow)">
+            <g
+              fill="none"
+              stroke="#63d3ff"
+              stroke-width="26"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M178,325 L255,468 L345,335 L433,468 L512,325" />
+              <path d="M916,322 L864,420 C858,432 846,440 832,438" />
+              <path
+                d="M1105,328 L1000,328 Q987,328 987,341 L987,450 Q987,463 1000,463 L1105,463 M987,395 L1085,395"
+              />
+            </g>
+
+            <g
+              transform="translate(480,250) scale(0.485,0.57) translate(-210,-357)"
+              fill="url(#wmWave)"
+            >
+              <path
+                d="M347,541
+             C430,440 540,360 650,357
+             C760,355 820,430 870,520
+             C905,585 940,650 972,683
+             C980,690 982,688 981,692
+             C975,697 955,694 935,688
+             C895,676 865,640 830,585
+             C785,512 735,430 620,424
+             C520,420 420,470 347,541 Z"
+              />
+              <path
+                d="M210,820
+             C300,700 420,565 565,562
+             C680,560 740,640 800,725
+             C850,790 900,810 960,808
+             C1020,806 1075,775 1105,740
+             C1070,782 1000,848 905,848
+             C820,848 760,800 710,730
+             C650,650 590,648 500,650
+             C380,655 280,730 210,820 Z"
+              />
+            </g>
+          </g>
+
+          <text
+            x="640"
+            y="618"
+            text-anchor="middle"
+            font-family="Inter, 'Helvetica Neue', Arial, sans-serif"
+            font-size="46"
+            font-weight="300"
+            letter-spacing="16"
+            fill="#47b8ff"
+          >
+            GO BEYOND
+          </text>
+        </svg>
+      </div>
+
       <ul class="nav-links">
         <li><a href="#">Home</a></li>
         <li><a href="#services">Services</a></li>
         <li><a href="#pricing">Packages</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Contact</a></li>
+        <li class="licust"><a href="#pricing2">Customized package</a></li>
+        <li><a href="#social">Contact</a></li>
       </ul>
-      <button class="nav-btn">Book a Free Consultation →</button>
+      <button class="nav-btn">
+        <a
+          class="nav-btn"
+          href="https://wa.me/201039078116?text=مرحبا%20WAVE%2C%20عايز%20أعرف%20أكتر%20عن%20خدماتكم"
+        >
+          Book a Free Consultation →</a
+        >
+      </button>
     </nav>
 
     <header class="hero">
-      <div class="hero-content">
-        <span class="hero-tag">Digital Marketing & Web Agency</span>
+      <div class="hero-orb o1" data-speed="0.12"></div>
+      <div class="hero-orb o2" data-speed="-0.08"></div>
+      <div class="hero-orb o3" data-speed="0.05"></div>
 
-        <h1 style="background-color: rgba(255, 255, 255, 0)">
+      <div class="hero-content" id="heroContent">
+        <span class="hero-tag hero-anim">Digital Marketing & Web Agency </span>
+
+        <h1 class="hero-anim" style="background-color: rgba(255, 255, 255, 0)">
           Go <span>Beyond.</span>
         </h1>
 
-        <p>
+        <p class="hero-anim">
           We help businesses grow through strategy, content, paid ads and
           high-performing websites — all connected for real results.
         </p>
-        <div class="hero-actions">
-          <a href="#" class="btn-primary"
+        <div class="hero-actions hero-anim">
+          <a
+            href="https://wa.me/201039078116?text=مرحبا%20WAVE%2C%20عايز%20أعرف%20أكتر%20عن%20خدماتكم"
+            class="btn-primary"
             >Book a Free Consultation <i class="fa-solid fa-arrow-right"></i
           ></a>
           <a href="#pricing" class="btn-secondary"
@@ -433,10 +1642,11 @@
           >
         </div>
       </div>
+      <div class="scroll-hint"></div>
     </header>
 
     <section class="services" id="services">
-      <div class="section-header">
+      <div class="section-header reveal">
         <h4>Our Services</h4>
         <h2>Everything You Need to Grow Online</h2>
         <p>
@@ -445,57 +1655,57 @@
         </p>
       </div>
       <div class="services-grid">
-        <div class="service-card">
+        <div class="service-card reveal">
           <div class="service-icon">
             <i class="fa-solid fa-bag-shopping"></i>
           </div>
           <h3>Shopify Store Development</h3>
           <p>High-converting, scalable online stores built for growth.</p>
-          <a href="#" class="card-link"
+          <a href="#pricing" class="card-link"
             >Explore Service <i class="fa-solid fa-arrow-right"></i
           ></a>
         </div>
-        <div class="service-card">
+        <div class="service-card reveal">
           <div class="service-icon">
             <i class="fa-solid fa-laptop-code"></i>
           </div>
           <h3>Website Optimization</h3>
           <p>Faster, smarter, higher converting websites.</p>
-          <a href="#" class="card-link"
+          <a href="#pricing" class="card-link"
             >Explore Service <i class="fa-solid fa-arrow-right"></i
           ></a>
         </div>
-        <div class="service-card">
+        <div class="service-card reveal">
           <div class="service-icon">
             <i class="fa-solid fa-share-nodes"></i>
           </div>
           <h3>Social Media Marketing</h3>
           <p>Strategic content that builds brand and drives sales.</p>
-          <a href="#" class="card-link"
+          <a href="#pricing" class="card-link"
             >Explore Service <i class="fa-solid fa-arrow-right"></i
           ></a>
         </div>
-        <div class="service-card">
+        <div class="service-card reveal">
           <div class="service-icon"><i class="fa-solid fa-chart-line"></i></div>
           <h3>Paid Advertising</h3>
           <p>Result-driven ad campaigns on Meta, Google, TikTok and more.</p>
-          <a href="#" class="card-link"
+          <a href="#pricing" class="card-link"
             >Explore Service <i class="fa-solid fa-arrow-right"></i
           ></a>
         </div>
-        <div class="service-card">
+        <div class="service-card reveal">
           <div class="service-icon"><i class="fa-solid fa-lightbulb"></i></div>
           <h3>Content & Creative Strategy</h3>
           <p>Scroll-stopping content with a clear strategy.</p>
-          <a href="#" class="card-link"
+          <a href="#pricing" class="card-link"
             >Explore Service <i class="fa-solid fa-arrow-right"></i
           ></a>
         </div>
-        <div class="service-card">
+        <div class="service-card reveal">
           <div class="service-icon"><i class="fa-solid fa-user-group"></i></div>
           <h3>Brand & Growth Support</h3>
           <p>Ongoing support to scale your brand long-term.</p>
-          <a href="#" class="card-link"
+          <a href="#pricing" class="card-link"
             >Explore Service <i class="fa-solid fa-arrow-right"></i
           ></a>
         </div>
@@ -503,7 +1713,7 @@
     </section>
 
     <section class="pricing" id="pricing">
-      <div class="section-header">
+      <div class="section-header reveal">
         <h4>Our Packages</h4>
         <h2>Flexible Plans for Every Stage</h2>
         <p>
@@ -512,56 +1722,217 @@
         </p>
       </div>
       <div class="pricing-grid">
-        <div class="pricing-card">
+        <div class="pricing-card reveal from-left">
           <h3>Start</h3>
           <p>Perfect for small businesses taking their first step online.</p>
           <ul class="pricing-features">
-            <li><i class="fa-solid fa-check"></i> Marketing Strategy  </li>
-            <li><i class="fa-solid fa-check"></i> Content Strategy </li>
-            <li><i class="fa-solid fa-check"></i> Social Media Strategy </li>
-            <li><i class="fa-solid fa-check"></i> 6 Designs </li>
-            <li><i class="fa-solid fa-check"></i> 3 Reels </li>
-            <li><i class="fa-solid fa-check"></i> 3 Canpaigns / Month</li>
-            <li><i class="fa-solid fa-check"></i> Conversion Landing Page </li>
-            <li><i class="fa-solid fa-check"></i> Basic analysis Report</li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                Marketing Strategy
+                <span class="egy">3000 EGP</span>
+              </div>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                Content strategy
+                <span class="egy">2000 EGP</span>
+              </div>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                Socail Media strategy
+                <span class="egy">2000 EGP</span>
+              </div>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                6 Daesigns
+                <span class="egy">1500 EGP</span>
+              </div>
+            </li>
+
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                3 Reels
+                <span class="egy">1500 EGP</span>
+              </div>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                3 Campaigns
+                <span class="egy">3000 EGP</span>
+              </div>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                Landing page
+                <span class="egy">6000 EGP</span>
+              </div>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                Marketing Strategy
+                <span class="egy">3000 EGP</span>
+              </div>
+            </li>
           </ul>
+          <div class="total">
+            <span class="large">15000 EGP</span>
+            <span class="small"><del>1900 EGP</del> </span>
+            <span></span>
+          </div>
           <a
-            href="#"
+            href="https://wa.me/201039078116?text=أهلاً وسهلاً بفريق WAVE %0Aمهتم بباقة Start بسعر 15000 جنيه.%0Aممكن أعرف التفاصيل وخطوات البدء؟%0Aشكراً لكم "
             class="btn-secondary"
             style="width: 100%; justify-content: center"
             >Get Started <i class="fa-solid fa-arrow-right"></i
           ></a>
         </div>
-        <div class="pricing-card popular">
+        <div class="pricing-card popular reveal zoom" style="--d: 0.15s">
           <span class="popular-badge">Most Popular</span>
           <h3>Standard</h3>
           <p>A complete growth system for serious businesses.</p>
           <ul class="pricing-features">
-            <li><i class="fa-solid fa-check"></i> Advanced strategy</li>
-            <li><i class="fa-solid fa-check"></i> Content & creative</li>
-            <li><i class="fa-solid fa-check"></i> Paid ad management</li>
-            <li><i class="fa-solid fa-check"></i> Performance tracking</li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                Marketing Strategy
+                <span class="egy">3000 EGP</span>
+              </div>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                Content strategy
+                <span class="egy">2000 EGP</span>
+              </div>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                Socail Media strategy
+                <span class="egy">2000 EGP</span>
+              </div>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                10 Designs
+                <span class="egy">2500 EGP</span>
+              </div>
+            </li>
+
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                6 Reels
+                <span class="egy">3000 EGP</span>
+              </div>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                5 Campaigns
+                <span class="egy">5000 EGP</span>
+              </div>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                Conversion Landing page
+                <span class="egy">7000 EGP</span>
+              </div>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                Marketing Strategy
+                <span class="egy">3000 EGP</span>
+              </div>
+            </li>
           </ul>
+          <div class="total">
+            <span class="large">20,000 EGP</span>
+            <span class="small"><del>24,500 EGP</del> </span>
+          </div>
           <a
-            href="#"
+            href="https://wa.me/201039078116?text=أهلاً وسهلاً بفريق WAVE %0Aمهتم بباقة Standard بسعر 20000 جنيه.%0Aممكن أعرف التفاصيل وخطوات البدء؟%0Aشكراً لكم "
             class="btn-primary"
             style="width: 100%; justify-content: center"
             >Choose Standard <i class="fa-solid fa-arrow-right"></i
           ></a>
         </div>
-        <div class="pricing-card">
+        <div class="pricing-card reveal from-right" style="--d: 0.3s">
           <h3>Pro</h3>
           <p>For established brands ready to scale faster.</p>
           <ul class="pricing-features">
-            <li><i class="fa-solid fa-check"></i> Full-funnel strategy</li>
             <li>
-              <i class="fa-solid fa-check"></i> Premium content & creatives
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                Advanced Marketing Strategy
+                <span class="egy">5000 EGP</span>
+              </div>
             </li>
-            <li><i class="fa-solid fa-check"></i> Multi-platform ads</li>
-            <li><i class="fa-solid fa-check"></i> Dedicated account manager</li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                Advanced Content strategy
+                <span class="egy">3000 EGP</span>
+              </div>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                Advanced Socail Media strategy
+                <span class="egy">3000 EGP</span>
+              </div>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                16 Designs
+                <span class="egy">4000 EGP</span>
+              </div>
+            </li>
+
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                10 Reels
+                <span class="egy">5000 EGP</span>
+              </div>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                8 Campaigns
+                <span class="egy">8000 EGP</span>
+              </div>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <div class="spans">
+                Multiplie Landing page &nbsp; or <br />
+                Shopify Development
+                <span class="egy">10000 EGP</span>
+              </div>
+            </li>
           </ul>
+          <div class="total">
+            <span class="large">35,500 EGP</span>
+            <span class="small"><del>38,000 EGP</del> </span>
+          </div>
+
           <a
-            href=""
+            href="https://wa.me/201039078116?text=أهلاً وسهلاً بفريق WAVE %0Aمهتم بباقة Pro بسعر 35500 جنيه.%0Aممكن أعرف التفاصيل وخطوات البدء؟%0Aشكراً لكم "
             class="btn-secondary"
             style="width: 100%; justify-content: center"
             >Choose Pro <i class="fa-solid fa-arrow-right"></i
@@ -570,14 +1941,627 @@
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer>
+    <section class="pricing pricing-single" id="pricing2">
+      <div class="section-header reveal">
+        <h4>BUILD YOUR PLAN</h4>
+        <h2>
+          Choose exactly what your business needs and create your own customized
+          plan.
+        </h2>
+        <p>
+          Not sure what to choose? Let’s talk. Tell us about your business, and
+          we’ll recommend the right services and strategy for you.
+        </p>
+      </div>
+
+      <div class="pricing-grid">
+        <div class="pricing-card reveal zoom">
+          <h3>custimize</h3>
+          <p>you can choose from list of packetges a special details</p>
+
+          <ul class="pricing-features">
+            <li>
+              <label class="pkg-item">
+                <input
+                  type="checkbox"
+                  class="pkg-check"
+                  data-name="Advanced Marketing Strategy"
+                  data-price="5000"
+                />
+                <span class="pkg-box"><i class="fa-solid fa-check"></i></span>
+                <span class="pkg-name">Advanced Marketing Strategy</span>
+                <span class="egy">5000 EGP</span>
+              </label>
+            </li>
+            <li>
+              <label class="pkg-item">
+                <input
+                  type="checkbox"
+                  class="pkg-check"
+                  data-name="Advanced Content strategy"
+                  data-price="3000"
+                />
+                <span class="pkg-box"><i class="fa-solid fa-check"></i></span>
+                <span class="pkg-name">Advanced Content strategy</span>
+                <span class="egy">3000 EGP</span>
+              </label>
+            </li>
+            <li>
+              <label class="pkg-item">
+                <input
+                  type="checkbox"
+                  class="pkg-check"
+                  data-name="Advanced Social Media strategy"
+                  data-price="3000"
+                />
+                <span class="pkg-box"><i class="fa-solid fa-check"></i></span>
+                <span class="pkg-name">Advanced Social Media strategy</span>
+                <span class="egy">3000 EGP</span>
+              </label>
+            </li>
+
+            <li>
+              <div
+                class="pkg-item pkg-counter"
+                data-unit="250"
+                data-one="Design"
+                data-many="Designs"
+              >
+                <span class="pkg-name"
+                  >Designs
+                  <small class="unit-price">250 EGP / design</small></span
+                >
+                <div class="qty">
+                  <button
+                    type="button"
+                    class="qty-btn"
+                    data-action="minus"
+                    aria-label="Decrease"
+                  >
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    class="qty-input"
+                    value="0"
+                    min="0"
+                    max="50"
+                    inputmode="numeric"
+                  />
+                  <button
+                    type="button"
+                    class="qty-btn"
+                    data-action="plus"
+                    aria-label="Increase"
+                  >
+                    +
+                  </button>
+                </div>
+                <span class="egy line-price">0 EGP</span>
+              </div>
+            </li>
+            <li>
+              <div
+                class="pkg-item pkg-counter"
+                data-unit="500"
+                data-one="Reel"
+                data-many="Reels"
+              >
+                <span class="pkg-name"
+                  >Reels <small class="unit-price">500 EGP / reel</small></span
+                >
+                <div class="qty">
+                  <button
+                    type="button"
+                    class="qty-btn"
+                    data-action="minus"
+                    aria-label="Decrease"
+                  >
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    class="qty-input"
+                    value="0"
+                    min="0"
+                    max="50"
+                    inputmode="numeric"
+                  />
+                  <button
+                    type="button"
+                    class="qty-btn"
+                    data-action="plus"
+                    aria-label="Increase"
+                  >
+                    +
+                  </button>
+                </div>
+                <span class="egy line-price">0 EGP</span>
+              </div>
+            </li>
+            <li>
+              <div
+                class="pkg-item pkg-counter"
+                data-unit="1000"
+                data-one="Campaign"
+                data-many="Campaigns"
+              >
+                <span class="pkg-name"
+                  >Campaigns
+                  <small class="unit-price">1000 EGP / campaign</small></span
+                >
+                <div class="qty">
+                  <button
+                    type="button"
+                    class="qty-btn"
+                    data-action="minus"
+                    aria-label="Decrease"
+                  >
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    class="qty-input"
+                    value="0"
+                    min="0"
+                    max="50"
+                    inputmode="numeric"
+                  />
+                  <button
+                    type="button"
+                    class="qty-btn"
+                    data-action="plus"
+                    aria-label="Increase"
+                  >
+                    +
+                  </button>
+                </div>
+                <span class="egy line-price">0 EGP</span>
+              </div>
+            </li>
+
+            <li>
+              <label class="pkg-item">
+                <input
+                  type="checkbox"
+                  class="pkg-check"
+                  data-name="Multiple Landing pages"
+                  data-price="10000"
+                />
+                <span class="pkg-box"><i class="fa-solid fa-check"></i></span>
+                <span class="pkg-name">Multiple Landing pages</span>
+                <span class="egy">10000 EGP</span>
+              </label>
+            </li>
+            <li>
+              <label class="pkg-item">
+                <input
+                  type="checkbox"
+                  class="pkg-check"
+                  data-name="Shopify Development"
+                  data-price="10000"
+                />
+                <span class="pkg-box"><i class="fa-solid fa-check"></i></span>
+                <span class="pkg-name">Shopify Development</span>
+                <span class="egy">10000 EGP</span>
+              </label>
+            </li>
+          </ul>
+
+          <div class="total" aria-live="polite">
+            <span class="large" id="totalPrice">0 EGP</span>
+            <span class="small" id="selectedCount">0 selected</span>
+          </div>
+
+          <a
+            id="chooseBtn"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-secondary"
+            style="width: 100%; justify-content: center"
+            >Choose Pro <i class="fa-solid fa-arrow-right"></i
+          ></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="social" id="social">
+      <div class="section-header reveal">
+        <h4>Follow Us</h4>
+        <h2>Stay Connected With WAVE</h2>
+        <p>
+          Follow our channels for fresh ideas, campaign results and the latest
+          updates, or message us directly to start your project.
+        </p>
+      </div>
+
+      <div class="social-grid">
+        <a
+          class="social-card reveal"
+          href="https://www.facebook.com/share/1KiP5sJos1/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div class="social-icon facebook">
+            <i class="fa-brands fa-facebook-f"></i>
+          </div>
+          <div class="social-info">
+            <h3>Facebook</h3>
+            <p>News, offers and client stories.</p>
+          </div>
+          <span class="social-arrow"
+            ><i class="fa-solid fa-arrow-right"></i
+          ></span>
+        </a>
+
+        <a
+          class="social-card reveal"
+          href="https://www.instagram.com/wavemarketing_1?stkn=cmZtc21rYmN0cGU4"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div class="social-icon instagram">
+            <i class="fa-brands fa-instagram"></i>
+          </div>
+          <div class="social-info">
+            <h3>Instagram</h3>
+            <p>Creative work, reels and behind the scenes.</p>
+          </div>
+          <span class="social-arrow"
+            ><i class="fa-solid fa-arrow-right"></i
+          ></span>
+        </a>
+
+        <a
+          class="social-card reveal"
+          href="https://www.tiktok.com/@wave_marketing1?_r=1&_t=ZS-9AHYuJh6QMs"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div class="social-icon tiktok">
+            <i class="fa-brands fa-tiktok"></i>
+          </div>
+          <div class="social-info">
+            <h3>TikTok</h3>
+            <p>Short videos and marketing tips.</p>
+          </div>
+          <span class="social-arrow"
+            ><i class="fa-solid fa-arrow-right"></i
+          ></span>
+        </a>
+
+        <a
+          class="social-card reveal"
+          href="https://wa.me/201039078116?text=مرحبا%20WAVE%2C%20عايز%20أعرف%20أكتر%20عن%20خدماتكم"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div class="social-icon whatsapp">
+            <i class="fa-brands fa-whatsapp"></i>
+          </div>
+          <div class="social-info">
+            <h3>WhatsApp</h3>
+            <p>Chat with us directly and get a quick reply.</p>
+          </div>
+          <span class="social-arrow"
+            ><i class="fa-solid fa-arrow-right"></i
+          ></span>
+        </a>
+      </div>
+    </section>
+
+    <footer class="reveal">
       <p>&copy; 2026 WAVE Digital Agency. All rights reserved.</p>
     </footer>
 
+    <a
+      href="https://wa.me/201039078116?text=مرحبا%20WAVE%2C%20عايز%20أعرف%20أكتر%20عن%20خدماتكم"
+      class="whatsapp-float"
+      target="_blank"
+      rel=""
+      aria-label="Chat on WhatsApp"
+    >
+      <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
     <script>
-      // Smooth interactive logic or scroll animations can be placed here if needed
-      console.log("WAVE Agency Landing Page Loaded Successfully.");
+      (function () {
+        const body = document.body;
+        const preloader = document.getElementById("preloader");
+        const nav = document.getElementById("mainNav");
+        const progress = document.getElementById("scrollProgress");
+        const orbs = document.querySelectorAll(".hero-orb");
+        const reduce = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+
+        let started = false;
+        function start() {
+          if (started) return;
+          started = true;
+          preloader.classList.add("hide");
+          body.classList.remove("is-loading");
+          body.classList.add("ready");
+          setTimeout(() => preloader.remove(), 1000);
+        }
+
+        window.addEventListener("load", () => setTimeout(start, 700));
+        setTimeout(start, 3500);
+
+        document
+          .querySelectorAll(".services-grid, .pricing-grid, .social-grid")
+          .forEach((grid) => {
+            Array.from(grid.children).forEach((el, i) => {
+              if (!el.style.getPropertyValue("--d")) {
+                el.style.setProperty("--d", i * 0.12 + "s");
+              }
+            });
+          });
+
+        const revealEls = document.querySelectorAll(".reveal");
+        if ("IntersectionObserver" in window && !reduce) {
+          const io = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add("in");
+                  io.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.12, rootMargin: "0px 0px -60px 0px" },
+          );
+          revealEls.forEach((el) => io.observe(el));
+        } else {
+          revealEls.forEach((el) => el.classList.add("in"));
+        }
+
+        const sections = Array.from(document.querySelectorAll("section[id]"));
+        const links = Array.from(document.querySelectorAll(".nav-links a"));
+
+        let ticking = false;
+        function onScroll() {
+          const y = window.scrollY;
+          const max =
+            document.documentElement.scrollHeight - window.innerHeight;
+          progress.style.transform = "scaleX(" + (max > 0 ? y / max : 0) + ")";
+          nav.classList.toggle("scrolled", y > 40);
+
+          if (!reduce) {
+            orbs.forEach((o) => {
+              const s = Number(o.dataset.speed) || 0;
+              o.style.translate = "0 " + y * s + "px";
+            });
+          }
+
+          let currentId = "";
+          sections.forEach((s) => {
+            if (y + window.innerHeight * 0.35 >= s.offsetTop) currentId = s.id;
+          });
+          links.forEach((a) => {
+            a.classList.toggle(
+              "current",
+              a.getAttribute("href") === "#" + currentId,
+            );
+          });
+          ticking = false;
+        }
+
+        window.addEventListener(
+          "scroll",
+          () => {
+            if (!ticking) {
+              requestAnimationFrame(onScroll);
+              ticking = true;
+            }
+          },
+          { passive: true },
+        );
+        onScroll();
+
+        document.querySelectorAll(".service-card").forEach((card) => {
+          card.addEventListener("mousemove", (e) => {
+            const r = card.getBoundingClientRect();
+            card.style.setProperty("--mx", e.clientX - r.left + "px");
+            card.style.setProperty("--my", e.clientY - r.top + "px");
+          });
+        });
+      })();
+
+      (function () {
+        const WHATSAPP_NUMBER = "201039078116";
+
+        const checks = document.querySelectorAll(".pkg-check");
+        const counters = document.querySelectorAll(".pkg-counter");
+        const totalEl = document.getElementById("totalPrice");
+        const countEl = document.getElementById("selectedCount");
+        const btn = document.getElementById("chooseBtn");
+
+        if (!checks.length || !totalEl || !countEl || !btn) {
+          console.warn("Pricing script: missing elements", {
+            checkboxes: checks.length,
+            totalPrice: !!totalEl,
+            selectedCount: !!countEl,
+            chooseBtn: !!btn,
+          });
+          return;
+        }
+
+        const totalItems = checks.length + counters.length;
+        const fmt = (n) => n.toLocaleString("en-US");
+        const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+        let lastTotal = 0;
+
+        let listEl = document.getElementById("selectedList");
+        if (!listEl) {
+          listEl = document.createElement("ul");
+          listEl.id = "selectedList";
+          listEl.className = "selected-list";
+          const totalBox = totalEl.closest(".total") || totalEl;
+          totalBox.parentNode.insertBefore(listEl, totalBox);
+        }
+
+        function getName(c) {
+          if (c.dataset.name) return c.dataset.name;
+          const label = c.closest("label");
+          const n = label && label.querySelector(".pkg-name");
+          return n ? n.textContent.trim() : "Item";
+        }
+
+        function getPrice(c) {
+          if (c.dataset.price) return Number(c.dataset.price);
+          const label = c.closest("label");
+          const p = label && label.querySelector(".egy");
+          return p ? Number(p.textContent.replace(/[^\d]/g, "")) : 0;
+        }
+
+        function getQty(input) {
+          return clamp(
+            parseInt(input.value, 10) || 0,
+            Number(input.min) || 0,
+            Number(input.max) || 50,
+          );
+        }
+
+        function renderList(picked) {
+          listEl.replaceChildren();
+
+          if (picked.length === 0) {
+            const li = document.createElement("li");
+            li.className = "sel-empty";
+            li.textContent = "No items selected yet";
+            listEl.appendChild(li);
+            return;
+          }
+
+          picked.forEach((p) => {
+            const li = document.createElement("li");
+
+            const name = document.createElement("span");
+            name.className = "sel-name";
+            name.textContent = p.name;
+
+            const price = document.createElement("span");
+            price.className = "sel-price";
+            price.textContent = fmt(p.price) + " EGP";
+
+            li.appendChild(name);
+            li.appendChild(price);
+            listEl.appendChild(li);
+          });
+        }
+
+        function update() {
+          let total = 0;
+          const picked = [];
+
+          checks.forEach((c) => {
+            if (c.checked) {
+              const price = getPrice(c);
+              total += price;
+              picked.push({ name: getName(c), price });
+            }
+          });
+
+          counters.forEach((row) => {
+            const input = row.querySelector(".qty-input");
+            const qty = getQty(input);
+            const price = qty * Number(row.dataset.unit);
+
+            row.querySelector(".line-price").textContent = fmt(price) + " EGP";
+            row.classList.toggle("active", qty > 0);
+
+            if (qty > 0) {
+              total += price;
+              const label = qty === 1 ? row.dataset.one : row.dataset.many;
+              picked.push({ name: qty + " " + label, price });
+            }
+          });
+
+          totalEl.textContent = fmt(total) + " EGP";
+          if (total !== lastTotal) {
+            totalEl.classList.remove("bump");
+            void totalEl.offsetWidth;
+            totalEl.classList.add("bump");
+            lastTotal = total;
+          }
+          countEl.textContent =
+            picked.length + " of " + totalItems + " selected";
+          renderList(picked);
+
+          if (picked.length === 0) {
+            btn.classList.add("is-disabled");
+            btn.setAttribute("aria-disabled", "true");
+            btn.removeAttribute("href");
+            return;
+          }
+
+          btn.classList.remove("is-disabled");
+          btn.removeAttribute("aria-disabled");
+
+          const lines = picked
+            .map((p) => "- " + p.name + " (" + fmt(p.price) + " EGP)")
+            .join("\n");
+          const message =
+            "مرحبا WAVE، عايز أشترك في باقة BUILD YOUR PLAN وأختار الخدمات معينه:\n" +
+            lines +
+            "\nالإجمالي: " +
+            fmt(total) +
+            " EGP";
+
+          btn.href =
+            "https://wa.me/" +
+            WHATSAPP_NUMBER +
+            "?text=" +
+            encodeURIComponent(message);
+        }
+
+        function resetAll() {
+          checks.forEach((c) => {
+            c.checked = false;
+          });
+          counters.forEach((row) => {
+            row.querySelector(".qty-input").value = 0;
+          });
+          update();
+        }
+
+        checks.forEach((c) => c.addEventListener("change", update));
+
+        counters.forEach((row) => {
+          const input = row.querySelector(".qty-input");
+
+          row.querySelectorAll(".qty-btn").forEach((b) => {
+            b.addEventListener("click", () => {
+              const step = b.dataset.action === "plus" ? 1 : -1;
+              input.value = clamp(
+                getQty(input) + step,
+                Number(input.min) || 0,
+                Number(input.max) || 50,
+              );
+              update();
+            });
+          });
+
+          input.addEventListener("input", update);
+          input.addEventListener("change", () => {
+            input.value = getQty(input);
+            update();
+          });
+        });
+
+        resetAll();
+        window.addEventListener("load", resetAll);
+        window.addEventListener("pageshow", (e) => {
+          if (e.persisted) resetAll();
+        });
+      })();
     </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+      class="socail"
+    ></script>
   </body>
 </html>
