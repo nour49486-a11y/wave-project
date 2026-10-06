@@ -194,7 +194,6 @@
         border-radius: 8px;
         color: #fff;
         font: inherit;
-        -moz-appearance: textfield;
       }
       .qty-input::-webkit-outer-spin-button,
       .qty-input::-webkit-inner-spin-button {
@@ -333,6 +332,10 @@
         transition:
           transform 0.3s ease,
           box-shadow 0.3s ease;
+
+        @media (max-width: 968px) {
+          display: none;
+        }
       }
 
       .nav-btn:hover {
@@ -1349,6 +1352,118 @@
           transform: none;
         }
       }
+
+      .menu-toggle {
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        .menu-toggle {
+          display: flex !important;
+          margin-right: 35px;
+          align-items: center;
+          justify-content: center;
+        }
+        .desktop-menu {
+          display: none !important;
+        }
+      }
+
+      .offcanvas-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        visibility: hidden;
+        opacity: 0;
+        transition:
+          opacity 0.3s ease,
+          visibility 0.3s ease;
+        z-index: 9998;
+      }
+
+      .offcanvas-overlay.active {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      .offcanvas-menu {
+        position: fixed;
+        top: 0;
+        left: -320px;
+        width: 280px;
+        height: 100vh;
+        background-color: #010612 !important;
+        border-right: 1px solid rgba(79, 210, 255, 0.3);
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.9);
+        display: flex;
+        flex-direction: column;
+        transition: left 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+        z-index: 9999;
+      }
+
+      .offcanvas-menu.active {
+        left: 0 !important;
+      }
+
+      .offcanvas-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid rgba(79, 210, 255, 0.2);
+      }
+
+      .offcanvas-title {
+        color: #4fd2ff !important;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        color: #4fd2ff !important;
+        font-size: 2rem;
+        cursor: pointer;
+        line-height: 1;
+      }
+
+      .offcanvas-body {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        overflow-y: auto;
+      }
+
+      .offcanvas-body .nav-links {
+        list-style: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 18px !important;
+      }
+      .offcanvas-body .nav-links li {
+        width: 100% !important;
+      }
+
+      .offcanvas-body .nav-links a {
+        color: #ffffff !important;
+        text-decoration: none !important;
+        font-size: 1.1rem !important;
+        display: block !important;
+        transition: color 0.3s ease;
+      }
+
+      .offcanvas-body .nav-links a:hover {
+        color: #4fd2ff !important;
+      }
     </style>
   </head>
   <body class="is-loading">
@@ -1605,6 +1720,29 @@
         <li class="licust"><a href="#pricing2">Customized package</a></li>
         <li><a href="#social">Contact</a></li>
       </ul>
+
+      <div class="menu-toggle" id="menuToggleBtn">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="30"
+          height="30"
+          fill="none"
+          stroke="#4fd2ff"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="
+            filter: drop-shadow(0 0 6px rgba(79, 210, 255, 0.6));
+            cursor: pointer;
+          "
+        >
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </div>
+
       <button class="nav-btn">
         <a
           class="nav-btn"
@@ -2249,6 +2387,30 @@
         </a>
       </div>
     </section>
+    <div class="offcanvas-overlay" id="offcanvasOverlay"></div>
+    <div class="offcanvas-menu" id="offcanvasMenu">
+      <div class="offcanvas-header">
+        <span class="offcanvas-title">Menu</span>
+        <button class="close-btn" id="closeMenuBtn">&times;</button>
+      </div>
+      <div class="offcanvas-body">
+        <ul class="nav-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#pricing">Packages</a></li>
+          <li class="licust"><a href="#pricing2">Customized package</a></li>
+          <li><a href="#social">Contact</a></li>
+        </ul>
+        <div class="nav-btn-container">
+          <a
+            class="nav-btn"
+            href="https://wa.me/201039078116?text=مرحبا%20WAVE%2C%20عايز%20أعرف%20أكتر%20عن%20خدماتكم"
+          >
+            Book a Free Consultation →
+          </a>
+        </div>
+      </div>
+    </div>
 
     <footer class="reveal">
       <p>&copy; 2026 WAVE Digital Agency. All rights reserved.</p>
@@ -2548,6 +2710,34 @@
             input.value = getQty(input);
             update();
           });
+        });
+
+        const menuToggleBtn = document.getElementById("menuToggleBtn");
+        const offcanvasMenu = document.getElementById("offcanvasMenu");
+        const offcanvasOverlay = document.getElementById("offcanvasOverlay");
+        const closeMenuBtn = document.getElementById("closeMenuBtn");
+
+        function openMenu() {
+          offcanvasMenu.classList.add("active");
+          offcanvasOverlay.classList.add("active");
+          document.body.style.overflow = "hidden";
+        }
+
+        function closeMenu() {
+          offcanvasMenu.classList.remove("active");
+          offcanvasOverlay.classList.remove("active");
+          document.body.style.overflow = "auto";
+        }
+
+        menuToggleBtn.addEventListener("click", openMenu);
+        closeMenuBtn.addEventListener("click", closeMenu);
+        offcanvasOverlay.addEventListener("click", closeMenu);
+
+        const mobileLinks = offcanvasMenu.querySelectorAll(
+          ".nav-links a, .nav-btn",
+        );
+        mobileLinks.forEach((link) => {
+          link.addEventListener("click", closeMenu);
         });
 
         resetAll();
