@@ -4,8 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WAVE - Digital Marketing & Web Agency</title>
+    <script>
+      /* apply saved language before first paint (no flash) */
+      try {
+        var l = localStorage.getItem("wave-lang");
+        if (l === "ar" || l === "en") {
+          document.documentElement.lang = l;
+          document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
+        }
+      } catch (e) {}
+    </script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cairo:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link
@@ -30,22 +40,54 @@
         --text-muted: #94a3b8;
         --gradient-blue: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
         --ease: cubic-bezier(0.22, 1, 0.36, 1);
-        -webkit-background-clip: text;
-        background-clip: text;
+        --font: "Outfit", sans-serif;
+        /* side padding: 5% on normal screens, centred 1280px container on huge screens */
+        --px: max(5%, calc((100vw - 1280px) / 2));
+      }
+
+      html[lang="ar"] {
+        --font: "Cairo", "Outfit", sans-serif;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 80px;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      /* hide the scrollbar (page still scrolls normally) */
+      html,
+      body,
+      .offcanvas-body {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      html::-webkit-scrollbar,
+      body::-webkit-scrollbar,
+      .offcanvas-body::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
       }
 
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: "Outfit", sans-serif;
-        scroll-behavior: smooth;
+        font-family: inherit;
+      }
+
+      img,
+      svg {
+        max-width: 100%;
       }
 
       body {
+        font-family: var(--font);
         background-color: var(--bg-color);
         color: var(--text-main);
         overflow-x: hidden;
+        overflow-x: clip;
         background-image:
           radial-gradient(
             circle at 80% 15%,
@@ -64,6 +106,7 @@
         overflow: hidden;
       }
 
+      /* ---------- Preloader ---------- */
       .preloader {
         position: fixed;
         inset: 0;
@@ -143,6 +186,7 @@
         box-shadow: 0 0 12px rgba(14, 165, 233, 0.8);
       }
 
+      /* ---------- Quantity counters (custom plan) ---------- */
       .pkg-counter {
         cursor: default;
         opacity: 0.55;
@@ -153,6 +197,7 @@
       }
       .pkg-counter .pkg-name {
         flex: 1;
+        min-width: 0;
       }
       .unit-price {
         display: block;
@@ -194,6 +239,7 @@
         border-radius: 8px;
         color: #fff;
         font: inherit;
+        -moz-appearance: textfield;
       }
       .qty-input::-webkit-outer-spin-button,
       .qty-input::-webkit-inner-spin-button {
@@ -206,7 +252,7 @@
       }
       .pkg-counter .line-price {
         min-width: 90px;
-        text-align: right;
+        text-align: end;
       }
 
       .pkg-counter.active .pkg-name {
@@ -220,14 +266,10 @@
         color: #1ea7ff;
       }
 
-      @media (max-width: 600px) {
-        .pkg-counter {
-          flex-wrap: wrap;
-          row-gap: 8px;
-        }
-      }
-
+      /* ---------- Navbar ---------- */
       nav {
+        --logo-size: 60px;
+        --wm-h: 56px;
         position: fixed;
         top: 0;
         left: 0;
@@ -235,11 +277,13 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 20px 5%;
+        gap: 12px;
+        padding: 20px var(--px);
         background: rgba(3, 7, 18, 0.8);
         backdrop-filter: blur(12px);
         z-index: 1000;
         border-bottom: 1px solid var(--card-border);
+        transform: translateY(-100%);
         transition:
           padding 0.5s var(--ease),
           background 0.5s var(--ease),
@@ -247,40 +291,57 @@
           transform 0.6s var(--ease);
       }
 
+      body.ready nav {
+        transform: translateY(0);
+      }
+
       nav.scrolled {
-        padding: 8px 5%;
+        --logo-size: 48px;
+        --wm-h: 44px;
+        padding: 8px var(--px);
         background: rgba(3, 7, 18, 0.92);
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
       }
 
-      nav.scrolled .wordmark {
-        height: 44px;
-      }
-
-      nav.scrolled .svglogo {
-        width: 48px;
-        height: 48px;
-      }
-
       .logo {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        flex: 0 0 auto;
         font-size: 24px;
         font-weight: 800;
         letter-spacing: 2px;
         color: var(--text-main);
       }
 
+      .logo span {
+        background: var(--gradient-blue);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .svglogo {
+        width: var(--logo-size);
+        height: var(--logo-size);
+        transition:
+          width 0.5s var(--ease),
+          height 0.5s var(--ease);
+      }
+
+      .wordmark {
+        height: var(--wm-h);
+        width: auto;
+        transition: height 0.5s var(--ease);
+      }
+
       .nav-links {
         display: flex;
         list-style: none;
-        gap: 50px;
-      }
-      .nav-links {
-        .licust {
-          width: 140px;
-          a {
-            width: 180px;
-          }
-        }
+        gap: clamp(18px, 3vw, 50px);
+        padding: 0;
+        margin: 0;
       }
 
       .nav-links a {
@@ -289,6 +350,7 @@
         color: var(--text-muted);
         font-size: 14px;
         font-weight: 500;
+        white-space: nowrap;
         transition: color 0.3s ease;
       }
 
@@ -312,9 +374,24 @@
         transform-origin: left;
       }
 
+      html[dir="rtl"] .nav-links a::after {
+        transform-origin: left;
+      }
+      html[dir="rtl"] .nav-links a:hover::after,
+      html[dir="rtl"] .nav-links a.current::after {
+        transform-origin: right;
+      }
+
       .nav-links a:hover,
       .nav-links a.current {
         color: #38bdf8;
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 0 0 auto;
       }
 
       .nav-btn {
@@ -323,53 +400,83 @@
         border: none;
         padding: 10px 20px;
         text-decoration: none;
-
         border-radius: 30px;
         font-size: 14px;
         font-weight: 600;
         cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
         box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
         transition:
           transform 0.3s ease,
           box-shadow 0.3s ease;
-
-        @media (max-width: 968px) {
-          display: none;
-        }
       }
 
       .nav-btn:hover {
+        color: #fff;
         transform: translateY(-2px);
         box-shadow: 0 6px 25px rgba(14, 165, 233, 0.5);
         text-decoration: none;
       }
 
-      .logo {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
+      /* language switch (shows both, current one is highlighted) */
+      .lang-switch {
+        display: inline-flex;
         align-items: center;
-        span {
-          background: var(--gradient-blue);
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
+        gap: 2px;
+        padding: 4px;
+        border-radius: 30px;
+        border: 1px solid var(--card-border);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-muted);
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1;
+        cursor: pointer;
+        direction: ltr;
+        transition: border-color 0.3s ease;
       }
 
+      .lang-switch:hover {
+        border-color: rgba(14, 165, 233, 0.5);
+      }
+
+      .lang-switch span {
+        padding: 8px 12px;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+      }
+
+      .lang-switch span.on {
+        background: var(--gradient-blue);
+        color: #fff;
+        box-shadow: 0 2px 12px rgba(14, 165, 233, 0.45);
+      }
+
+      .menu-toggle {
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* ---------- Hero ---------- */
       header.hero {
-        padding: 160px 5% 80px 5%;
+        padding: clamp(110px, 14vw, 160px) var(--px) clamp(60px, 8vw, 80px);
         display: flex;
         justify-content: space-between;
         align-items: center;
         position: relative;
         overflow: hidden;
         min-height: 88vh;
+        min-height: 88svh;
         background-image: url("./image.png");
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;
-        margin-top: 6rem;
+        margin-top: clamp(4.5rem, 8vw, 6rem);
       }
 
       .hero-orb {
@@ -429,6 +536,7 @@
 
       .hero-content {
         max-width: 600px;
+        width: 100%;
         position: relative;
         z-index: 2;
       }
@@ -444,10 +552,11 @@
       }
 
       .hero-content h1 {
-        font-size: 80px;
+        font-size: clamp(42px, 8vw, 80px);
         font-weight: 800;
         line-height: 1.1;
         margin-bottom: 20px;
+        padding-bottom: 0.08em;
         background: linear-gradient(to right, #ffffff, #94a3b8);
         -webkit-background-clip: text;
         background-clip: text;
@@ -482,26 +591,26 @@
 
       .hero-content p {
         color: var(--text-muted);
-        font-size: 25px;
+        font-size: clamp(17px, 2.4vw, 25px);
         line-height: 1.6;
         margin-bottom: 35px;
       }
 
       .hero-actions {
         display: flex;
-        gap: 20px;
+        flex-wrap: wrap;
+        gap: 16px 20px;
         align-items: center;
-      }
-
-      body.is-loading .hero-anim,
-      body.is-loading nav {
-        animation: none;
       }
 
       .hero-anim {
         opacity: 0;
         transform: translateY(40px);
         filter: blur(8px);
+      }
+
+      body.is-loading .hero-anim {
+        animation: none;
       }
 
       body.ready .hero-anim {
@@ -527,14 +636,6 @@
           transform: translateY(0);
           filter: blur(0);
         }
-      }
-
-      nav {
-        transform: translateY(-100%);
-      }
-
-      body.ready nav {
-        transform: translateY(0);
       }
 
       .btn-primary {
@@ -583,14 +684,27 @@
 
       .btn-primary i,
       .btn-secondary i,
-      .card-link i {
+      .card-link i,
+      .nav-btn i {
         transition: transform 0.35s var(--ease);
       }
 
       .btn-primary:hover i,
       .btn-secondary:hover i,
-      .card-link:hover i {
+      .card-link:hover i,
+      .nav-btn:hover i {
         transform: translateX(5px);
+      }
+
+      /* mirror arrows in Arabic */
+      html[dir="rtl"] .fa-arrow-right {
+        transform: scaleX(-1);
+      }
+      html[dir="rtl"] .btn-primary:hover i,
+      html[dir="rtl"] .btn-secondary:hover i,
+      html[dir="rtl"] .card-link:hover i,
+      html[dir="rtl"] .nav-btn:hover i {
+        transform: scaleX(-1) translateX(5px);
       }
 
       .btn-secondary {
@@ -610,6 +724,7 @@
       }
 
       .btn-secondary:hover {
+        color: #fff;
         border-color: rgba(14, 165, 233, 0.5);
         box-shadow: 0 10px 30px rgba(14, 165, 233, 0.18);
       }
@@ -669,12 +784,13 @@
         }
       }
 
+      /* ---------- Sections ---------- */
       section.services {
-        padding: 80px 5%;
+        padding: clamp(56px, 9vw, 80px) var(--px);
       }
 
       .section-header {
-        margin-bottom: 50px;
+        margin-bottom: clamp(32px, 5vw, 50px);
       }
 
       .section-header h4 {
@@ -686,27 +802,29 @@
       }
 
       .section-header h2 {
-        font-size: 38px;
+        font-size: clamp(26px, 4.5vw, 38px);
         font-weight: 700;
+        line-height: 1.25;
         margin-bottom: 15px;
       }
 
       .section-header p {
         color: var(--text-muted);
         font-size: 15px;
+        line-height: 1.7;
         max-width: 500px;
       }
 
       .services-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
         gap: 25px;
       }
 
       .service-card {
         background: var(--card-bg);
         border: 1px solid var(--card-border);
-        padding: 35px;
+        padding: clamp(24px, 4vw, 35px);
         border-radius: 20px;
         backdrop-filter: blur(16px);
         transition: all 0.4s ease;
@@ -790,7 +908,7 @@
       }
 
       section.pricing {
-        padding: 80px 5%;
+        padding: clamp(56px, 9vw, 80px) var(--px);
         background-image: url("./sea.jpeg");
         background-repeat: no-repeat;
         background-size: cover;
@@ -799,15 +917,15 @@
 
       .pricing-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
         gap: 25px;
-        margin-top: 50px;
+        margin-top: clamp(32px, 5vw, 50px);
       }
 
       .pricing-card {
         background: var(--card-bg);
         border: 1px solid var(--card-border);
-        padding: 40px;
+        padding: clamp(24px, 4vw, 40px);
         border-radius: 20px;
         backdrop-filter: blur(16px);
         position: relative;
@@ -840,7 +958,7 @@
       .popular-badge {
         position: absolute;
         top: -12px;
-        right: 30px;
+        inset-inline-end: 30px;
         background: var(--gradient-blue);
         color: white;
         font-size: 11px;
@@ -858,134 +976,72 @@
       .pricing-card > p {
         color: var(--text-muted);
         font-size: 14px;
+        line-height: 1.6;
         margin-bottom: 25px;
       }
 
       .pricing-features {
         list-style: none;
-        margin-bottom: 35px;
+        padding: 0;
+        margin-bottom: 22px;
       }
 
       .pricing-features li {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
         font-size: 14px;
         color: var(--text-muted);
         margin-bottom: 15px;
-        display: flex;
         align-items: center;
         gap: 12px;
       }
 
       .pricing-features li i {
         color: var(--accent-glow);
+        flex: 0 0 auto;
       }
 
-      footer {
-        padding: 60px 5%;
-        border-top: 1px solid var(--card-border);
-        text-align: center;
-        color: var(--text-muted);
-        font-size: 14px;
-      }
-
-      .whatsapp-float {
-        position: fixed;
-        bottom: 25px;
-        right: 25px;
-        width: 60px;
-        height: 60px;
-        background-color: #25d366;
-        color: #ffffff;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 32px;
-        text-decoration: none;
-        box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
-        z-index: 1100;
-        transition:
-          transform 0.3s ease,
-          box-shadow 0.3s ease;
-        animation: whatsapp-pulse 2s infinite;
-      }
-
-      .whatsapp-float:hover {
-        transform: scale(1.1);
-        box-shadow: 0 8px 28px rgba(37, 211, 102, 0.65);
-      }
-
-      @keyframes whatsapp-pulse {
-        0% {
-          box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6);
-        }
-        70% {
-          box-shadow: 0 0 0 18px rgba(37, 211, 102, 0);
-        }
-        100% {
-          box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
-        }
-      }
-
-      @media (max-width: 968px) {
-        .hero-content h1 {
-          font-size: 42px;
-        }
-        .hero-content p {
-          font-size: 19px;
-        }
-        .nav-links {
-          display: none;
-        }
-        .whatsapp-float {
-          width: 52px;
-          height: 52px;
-          font-size: 28px;
-          bottom: 18px;
-          right: 18px;
-        }
-      }
-
-      .svglogo {
-        width: 60px;
-        height: 60px;
-        transition:
-          width 0.5s var(--ease),
-          height 0.5s var(--ease);
-      }
-
-      .wordmark {
-        height: 56px;
-        width: auto;
-        transition: height 0.5s var(--ease);
-      }
-      .egy {
-        color: #0ea5e9;
-        margin-left: 80px;
-      }
-
-      li {
+      .pricing-features li .spans {
         width: 100%;
+        min-width: 0;
         display: flex;
         flex-direction: row;
-
-        .spans {
-          width: 100%;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-        }
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
       }
+
+      .egy {
+        color: #0ea5e9;
+        margin-inline-start: 12px;
+        white-space: nowrap;
+      }
+
       .total {
         display: flex;
         flex-direction: row-reverse;
-        gap: 2rem;
-        margin-top: -2rem;
-        margin-bottom: 0.9rem;
+        justify-content: flex-start;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem 2rem;
+        margin: 0 0 18px;
+      }
+
+      .total .large {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+
+      .total .small {
+        font-size: 14px;
+        color: var(--text-muted);
       }
 
       section.pricing.pricing-single {
         background: none;
-        padding-inline: 10%;
+        padding-inline: max(10%, calc((100vw - 1100px) / 2));
       }
 
       .pricing-single .section-header {
@@ -998,12 +1054,8 @@
 
       .pricing-single .pricing-grid {
         grid-template-columns: 1fr;
-      }
-
-      @media (max-width: 768px) {
-        section.pricing.pricing-single {
-          padding-inline: 4%;
-        }
+        max-width: 900px;
+        margin-inline: auto;
       }
 
       .pkg-item {
@@ -1064,13 +1116,14 @@
 
       .pkg-name {
         flex: 1;
+        min-width: 0;
         transition:
           opacity 0.2s ease,
           color 0.2s ease;
       }
 
       .pkg-item .egy {
-        margin-left: 0;
+        margin-inline-start: 0;
         white-space: nowrap;
         transition: opacity 0.2s ease;
       }
@@ -1084,26 +1137,13 @@
         color: var(--text-main);
       }
 
-      .pricing-single .total .large {
-        font-size: 22px;
-        font-weight: 700;
-        color: var(--text-main);
-      }
-
-      .pricing-single .total .small {
-        align-self: center;
-        font-size: 14px;
-        color: var(--text-muted);
-      }
-
       .is-disabled {
         opacity: 0.45;
         pointer-events: none;
       }
 
       section.social {
-        padding: 80px 5%;
-
+        padding: clamp(56px, 9vw, 80px) var(--px);
         background-image:
           linear-gradient(rgba(3, 7, 18, 0.45), rgba(3, 7, 18, 0.7)),
           url("./socail.jpeg");
@@ -1114,7 +1154,7 @@
 
       .social-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
         gap: 25px;
       }
 
@@ -1122,7 +1162,7 @@
         display: flex;
         align-items: center;
         gap: 18px;
-        padding: 28px 30px;
+        padding: clamp(20px, 3.5vw, 28px) clamp(18px, 3.5vw, 30px);
         background: var(--card-bg);
         border: 1px solid var(--card-border);
         border-radius: 20px;
@@ -1223,6 +1263,11 @@
         transform: rotate(-45deg);
       }
 
+      html[dir="rtl"] .social-card:hover .social-arrow {
+        transform: rotate(45deg);
+      }
+
+      /* ---------- Selected list (custom plan) ---------- */
       .selected-list {
         list-style: none;
         margin: 0 0 18px;
@@ -1261,12 +1306,12 @@
         color: var(--text-muted);
       }
 
-      .pricing-single .total {
-        margin-top: 0;
+      .pricing-single .total .large {
+        font-size: 22px;
       }
 
-      .pricing-single .pricing-features {
-        margin-bottom: 20px;
+      .pricing-single .total .small {
+        align-self: center;
       }
 
       #totalPrice.bump {
@@ -1286,6 +1331,7 @@
         }
       }
 
+      /* ---------- Reveal on scroll ---------- */
       .reveal {
         opacity: 0;
         transform: translateY(60px);
@@ -1306,11 +1352,20 @@
         transform: translateX(70px);
       }
 
+      html[dir="rtl"] .reveal.from-left {
+        transform: translateX(70px);
+      }
+
+      html[dir="rtl"] .reveal.from-right {
+        transform: translateX(-70px);
+      }
+
       .reveal.zoom {
         transform: scale(0.88) translateY(30px);
       }
 
-      .reveal.in {
+      .reveal.in,
+      html[dir="rtl"] .reveal.in {
         opacity: 1;
         transform: none;
         filter: blur(0);
@@ -1334,47 +1389,83 @@
         transition-delay: 0s;
       }
 
-      @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
+      /* ---------- Footer ---------- */
+      footer {
+        padding: 50px var(--px);
+        border-top: 1px solid var(--card-border);
+        color: var(--text-muted);
+        font-size: 14px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px 40px;
+      }
+
+      .footer-features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px 32px;
+        font-size: 1rem;
+        color: white;
+      }
+
+      .footer-features .feature {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .footer-features .feature i {
+        color: #0ea5e9;
+      }
+
+      /* ---------- WhatsApp floating button ---------- */
+      .whatsapp-float {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: 60px;
+        height: 60px;
+        background-color: #25d366;
+        color: #ffffff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        text-decoration: none;
+        box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
+        z-index: 1100;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+        animation: whatsapp-pulse 2s infinite;
+      }
+
+      .whatsapp-float:hover {
+        color: #fff;
+        transform: scale(1.1);
+        box-shadow: 0 8px 28px rgba(37, 211, 102, 0.65);
+      }
+
+      @keyframes whatsapp-pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6);
         }
-        .reveal,
-        .hero-anim {
-          opacity: 1;
-          transform: none;
-          filter: none;
+        70% {
+          box-shadow: 0 0 0 18px rgba(37, 211, 102, 0);
         }
-        nav {
-          transform: none;
+        100% {
+          box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
         }
       }
 
-      .menu-toggle {
-        display: none;
-      }
-
-      @media (max-width: 768px) {
-        .menu-toggle {
-          display: flex !important;
-          margin-right: 35px;
-          align-items: center;
-          justify-content: center;
-        }
-        .desktop-menu {
-          display: none !important;
-        }
-      }
-
+      /* ---------- Off-canvas mobile menu ---------- */
       .offcanvas-overlay {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
+        inset: 0;
         background-color: rgba(0, 0, 0, 0.7);
         backdrop-filter: blur(5px);
         visibility: hidden;
@@ -1393,20 +1484,32 @@
       .offcanvas-menu {
         position: fixed;
         top: 0;
-        left: -320px;
-        width: 280px;
+        inset-inline-start: 0;
+        width: min(300px, 85vw);
         height: 100vh;
+        height: 100dvh;
         background-color: #010612 !important;
-        border-right: 1px solid rgba(79, 210, 255, 0.3);
+        border-inline-end: 1px solid rgba(79, 210, 255, 0.3);
         box-shadow: 10px 0 30px rgba(0, 0, 0, 0.9);
         display: flex;
         flex-direction: column;
-        transition: left 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+        transform: translateX(-105%);
+        visibility: hidden;
+        transition:
+          transform 0.4s cubic-bezier(0.77, 0, 0.175, 1),
+          visibility 0.4s;
         z-index: 9999;
       }
 
-      .offcanvas-menu.active {
-        left: 0 !important;
+      html[dir="rtl"] .offcanvas-menu {
+        transform: translateX(105%);
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.9);
+      }
+
+      .offcanvas-menu.active,
+      html[dir="rtl"] .offcanvas-menu.active {
+        transform: none;
+        visibility: visible;
       }
 
       .offcanvas-header {
@@ -1449,6 +1552,7 @@
         align-items: flex-start !important;
         gap: 18px !important;
       }
+
       .offcanvas-body .nav-links li {
         width: 100% !important;
       }
@@ -1458,11 +1562,219 @@
         text-decoration: none !important;
         font-size: 1.1rem !important;
         display: block !important;
+        white-space: normal;
         transition: color 0.3s ease;
       }
 
       .offcanvas-body .nav-links a:hover {
         color: #4fd2ff !important;
+      }
+
+      .offcanvas-body .nav-links a::after {
+        display: none;
+      }
+
+      .nav-btn-container .nav-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      /* =====================================================
+         RESPONSIVE
+         ===================================================== */
+
+      /* RTL typography: no letter-spacing (it breaks Arabic letter joining) */
+      html[dir="rtl"] .hero-tag,
+      html[dir="rtl"] .section-header h4,
+      html[dir="rtl"] .popular-badge,
+      html[dir="rtl"] .logo {
+        letter-spacing: 0;
+      }
+
+      html[dir="rtl"] .hero-content h1 {
+        line-height: 1.35;
+      }
+
+      /* large laptops / small desktops */
+      @media (max-width: 1200px) {
+        .nav-actions .nav-btn {
+          padding: 10px 16px;
+          font-size: 13px;
+        }
+      }
+
+      /* tablets & below: hamburger menu */
+      @media (max-width: 1024px) {
+        nav > .nav-links,
+        .nav-actions .nav-btn {
+          display: none;
+        }
+        .menu-toggle {
+          display: flex;
+          cursor: pointer;
+        }
+        nav {
+          justify-content: space-between;
+        }
+      }
+
+      @media (max-width: 968px) {
+        .hero-orb.o1 {
+          width: 300px;
+          height: 300px;
+        }
+        .hero-orb.o2 {
+          width: 240px;
+          height: 240px;
+        }
+      }
+
+      /* tablets portrait */
+      @media (max-width: 768px) {
+        section.pricing.pricing-single {
+          padding-inline: 4%;
+        }
+        footer {
+          flex-direction: column;
+          text-align: center;
+          justify-content: center;
+        }
+        .footer-features {
+          justify-content: center;
+        }
+        .whatsapp-float {
+          width: 52px;
+          height: 52px;
+          font-size: 28px;
+          bottom: 18px;
+          right: 18px;
+        }
+        .section-header p {
+          max-width: 100%;
+        }
+      }
+
+      /* phones */
+      @media (max-width: 600px) {
+        nav {
+          --logo-size: 40px;
+          --wm-h: 40px;
+          padding: 12px 4%;
+          gap: 8px;
+        }
+        nav.scrolled {
+          --logo-size: 34px;
+          --wm-h: 34px;
+          padding: 8px 4%;
+        }
+        .nav-actions {
+          gap: 8px;
+        }
+        .lang-switch span {
+          padding: 7px 10px;
+        }
+        header.hero {
+          min-height: auto;
+          padding-top: 120px;
+          padding-bottom: 80px;
+          background-position: 65% center;
+        }
+        .scroll-hint {
+          display: none;
+        }
+        .hero-orb {
+          opacity: 0.6;
+        }
+        .pkg-counter {
+          flex-wrap: wrap;
+          row-gap: 8px;
+        }
+        .pkg-counter .qty {
+          margin-inline: 0;
+        }
+        .pkg-counter .line-price {
+          margin-inline-start: auto;
+        }
+        .pricing-features li .spans {
+          flex-wrap: wrap;
+          row-gap: 2px;
+        }
+        .egy {
+          margin-inline-start: 0;
+        }
+        .selected-list li {
+          gap: 10px;
+        }
+      }
+
+      /* small phones */
+      @media (max-width: 480px) {
+        .hero-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .hero-actions a {
+          width: 100%;
+          justify-content: center;
+          text-align: center;
+        }
+        .service-icon {
+          margin-bottom: 18px;
+        }
+        .social-icon {
+          width: 46px;
+          height: 46px;
+          font-size: 22px;
+        }
+        .social-info h3 {
+          font-size: 18px;
+        }
+        .popular-badge {
+          inset-inline-end: 20px;
+        }
+        .footer-features {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+
+      /* very small phones */
+      @media (max-width: 360px) {
+        .wordmark {
+          display: none;
+        }
+        .pricing-card h3 {
+          font-size: 20px;
+        }
+      }
+
+      /* short landscape phones */
+      @media (max-height: 520px) and (orientation: landscape) {
+        header.hero {
+          min-height: auto;
+        }
+        .scroll-hint {
+          display: none;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+        .reveal,
+        .hero-anim {
+          opacity: 1;
+          transform: none;
+          filter: none;
+        }
+        nav {
+          transform: none;
+        }
       }
     </style>
   </head>
@@ -1714,43 +2026,54 @@
       </div>
 
       <ul class="nav-links">
-        <li><a href="#">Home</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#pricing">Packages</a></li>
-        <li class="licust"><a href="#pricing2">Customized package</a></li>
-        <li><a href="#social">Contact</a></li>
+        <li><a href="#" data-i18n="nav_home">Home</a></li>
+        <li><a href="#services" data-i18n="nav_services">Services</a></li>
+        <li><a href="#pricing" data-i18n="nav_packages">Packages</a></li>
+        <li>
+          <a href="#pricing2" data-i18n="nav_custom">Customized package</a>
+        </li>
+        <li><a href="#social" data-i18n="nav_contact">Contact</a></li>
       </ul>
 
-      <div class="menu-toggle" id="menuToggleBtn">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          width="30"
-          height="30"
-          fill="none"
-          stroke="#4fd2ff"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          style="
-            filter: drop-shadow(0 0 6px rgba(79, 210, 255, 0.6));
-            cursor: pointer;
-          "
+      <div class="nav-actions">
+        <!-- Language switch: both languages shown, the current one is highlighted -->
+        <button
+          type="button"
+          class="lang-switch"
+          id="langSwitch"
+          aria-label="Change language / تغيير اللغة"
         >
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <line x1="3" y1="12" x2="21" y2="12"></line>
-          <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
-      </div>
+          <span data-l="en">EN</span>
+          <span data-l="ar">عربي</span>
+        </button>
 
-      <button class="nav-btn">
-        <a
-          class="nav-btn"
-          href="https://wa.me/201039078116?text=مرحبا%20WAVE%2C%20عايز%20أعرف%20أكتر%20عن%20خدماتكم"
-        >
-          Book a Free Consultation →</a
-        >
-      </button>
+        <a class="nav-btn" data-wa="general" href="https://wa.me/201039078116">
+          <span data-i18n="book">Book a Free Consultation</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+
+        <div class="menu-toggle" id="menuToggleBtn" aria-label="Menu">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            width="30"
+            height="30"
+            fill="none"
+            stroke="#4fd2ff"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="
+              filter: drop-shadow(0 0 6px rgba(79, 210, 255, 0.6));
+              cursor: pointer;
+            "
+          >
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </div>
+      </div>
     </nav>
 
     <header class="hero">
@@ -1759,24 +2082,33 @@
       <div class="hero-orb o3" data-speed="0.05"></div>
 
       <div class="hero-content" id="heroContent">
-        <span class="hero-tag hero-anim">Digital Marketing & Web Agency </span>
+        <span class="hero-tag hero-anim" data-i18n="hero_tag"
+          >Digital Marketing & Web Agency</span
+        >
 
-        <h1 class="hero-anim" style="background-color: rgba(255, 255, 255, 0)">
+        <h1
+          class="hero-anim"
+          style="background-color: rgba(255, 255, 255, 0)"
+          data-i18n-html="hero_title"
+        >
           Go <span>Beyond.</span>
         </h1>
 
-        <p class="hero-anim">
+        <p class="hero-anim" data-i18n="hero_desc">
           We help businesses grow through strategy, content, paid ads and
           high-performing websites — all connected for real results.
         </p>
         <div class="hero-actions hero-anim">
           <a
-            href="https://wa.me/201039078116?text=مرحبا%20WAVE%2C%20عايز%20أعرف%20أكتر%20عن%20خدماتكم"
+            data-wa="general"
+            href="https://wa.me/201039078116"
             class="btn-primary"
-            >Book a Free Consultation <i class="fa-solid fa-arrow-right"></i
+            ><span data-i18n="book">Book a Free Consultation</span>
+            <i class="fa-solid fa-arrow-right"></i
           ></a>
           <a href="#pricing" class="btn-secondary"
-            ><i class="fa-solid fa-play"></i> Let's Build Your Next Wave</a
+            ><i class="fa-solid fa-play"></i>
+            <span data-i18n="hero_cta2">Let's Build Your Next Wave</span></a
           >
         </div>
       </div>
@@ -1785,9 +2117,9 @@
 
     <section class="services" id="services">
       <div class="section-header reveal">
-        <h4>Our Services</h4>
-        <h2>Everything You Need to Grow Online</h2>
-        <p>
+        <h4 data-i18n="s_tag">Our Services</h4>
+        <h2 data-i18n="s_title">Everything You Need to Grow Online</h2>
+        <p data-i18n="s_desc">
           From strategy to execution, we provide end-to-end digital solutions
           that help your business attract, convert and scale.
         </p>
@@ -1797,54 +2129,69 @@
           <div class="service-icon">
             <i class="fa-solid fa-bag-shopping"></i>
           </div>
-          <h3>Shopify Store Development</h3>
-          <p>High-converting, scalable online stores built for growth.</p>
-          <a href="#pricing" class="card-link"
-            >Explore Service <i class="fa-solid fa-arrow-right"></i
+          <h3 data-i18n="sv1_t">Shopify Store Development</h3>
+          <p data-i18n="sv1_d">
+            High-converting, scalable online stores built for growth.
+          </p>
+          <a
+            href="https://www.instagram.com/p/DeU7LXbDmEp/?utm_source=ig_web_copy_link&dlrf=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA=="
+            class="card-link"
+            ><span data-i18n="explore">Explore Service</span>
+            <i class="fa-solid fa-arrow-right"></i
           ></a>
         </div>
         <div class="service-card reveal">
           <div class="service-icon">
             <i class="fa-solid fa-laptop-code"></i>
           </div>
-          <h3>Website Optimization</h3>
-          <p>Faster, smarter, higher converting websites.</p>
-          <a href="#pricing" class="card-link"
-            >Explore Service <i class="fa-solid fa-arrow-right"></i
+          <h3 data-i18n="sv2_t">Website Development and Optimization</h3>
+          <p data-i18n="sv2_d">Faster, smarter, higher converting websites.</p>
+          <a
+            href="https://www.instagram.com/p/DeU7LXbDmEp/?utm_source=ig_web_copy_link&dlrf=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA=="
+            class="card-link"
+            ><span data-i18n="explore">Explore Service</span>
+            <i class="fa-solid fa-arrow-right"></i
           ></a>
         </div>
         <div class="service-card reveal">
           <div class="service-icon">
             <i class="fa-solid fa-share-nodes"></i>
           </div>
-          <h3>Social Media Marketing</h3>
-          <p>Strategic content that builds brand and drives sales.</p>
-          <a href="#pricing" class="card-link"
-            >Explore Service <i class="fa-solid fa-arrow-right"></i
+          <h3 data-i18n="sv3_t">Social Media Marketing</h3>
+          <p data-i18n="sv3_d">
+            Strategic content that builds brand and drives sales.
+          </p>
+          <a
+            href="https://www.instagram.com/p/DeU7LXbDmEp/?utm_source=ig_web_copy_link&dlrf=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA=="
+            class="card-link"
+            ><span data-i18n="explore">Explore Service</span>
+            <i class="fa-solid fa-arrow-right"></i
           ></a>
         </div>
         <div class="service-card reveal">
           <div class="service-icon"><i class="fa-solid fa-chart-line"></i></div>
-          <h3>Paid Advertising</h3>
-          <p>Result-driven ad campaigns on Meta, Google, TikTok and more.</p>
-          <a href="#pricing" class="card-link"
-            >Explore Service <i class="fa-solid fa-arrow-right"></i
+          <h3 data-i18n="sv4_t">Paid Ads</h3>
+          <p data-i18n="sv4_d">
+            Result-driven ad campaigns on Meta, Google, TikTok and more.
+          </p>
+          <a
+            href="https://www.instagram.com/p/DeU7LXbDmEp/?utm_source=ig_web_copy_link&dlrf=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA=="
+            class="card-link"
+            ><span data-i18n="explore">Explore Service</span>
+            <i class="fa-solid fa-arrow-right"></i
           ></a>
         </div>
         <div class="service-card reveal">
           <div class="service-icon"><i class="fa-solid fa-lightbulb"></i></div>
-          <h3>Content & Creative Strategy</h3>
-          <p>Scroll-stopping content with a clear strategy.</p>
-          <a href="#pricing" class="card-link"
-            >Explore Service <i class="fa-solid fa-arrow-right"></i
-          ></a>
-        </div>
-        <div class="service-card reveal">
-          <div class="service-icon"><i class="fa-solid fa-user-group"></i></div>
-          <h3>Brand & Growth Support</h3>
-          <p>Ongoing support to scale your brand long-term.</p>
-          <a href="#pricing" class="card-link"
-            >Explore Service <i class="fa-solid fa-arrow-right"></i
+          <h3 data-i18n="sv5_t">Content & Creative Strategy</h3>
+          <p data-i18n="sv5_d">
+            Scroll-stopping content with a clear strategy.
+          </p>
+          <a
+            href="https://www.instagram.com/p/DeU7LXbDmEp/?utm_source=ig_web_copy_link&dlrf=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA=="
+            class="card-link"
+            ><span data-i18n="explore">Explore Service</span>
+            <i class="fa-solid fa-arrow-right"></i
           ></a>
         </div>
       </div>
@@ -1852,462 +2199,515 @@
 
     <section class="pricing" id="pricing">
       <div class="section-header reveal">
-        <h4>Our Packages</h4>
-        <h2>Flexible Plans for Every Stage</h2>
-        <p>
+        <h4 data-i18n="p_tag">Our Packages</h4>
+        <h2 data-i18n="p_title">Flexible Plans for Every Stage</h2>
+        <p data-i18n="p_desc">
           Whether you're just getting started or ready to scale, we have a plan
           that fits your goals.
         </p>
       </div>
       <div class="pricing-grid">
+        <!-- START -->
         <div class="pricing-card reveal from-left">
-          <h3>Start</h3>
-          <p>Perfect for small businesses taking their first step online.</p>
-          <ul class="pricing-features">
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                Marketing Strategy
-                <span class="egy">3000 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                Content strategy
-                <span class="egy">2000 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                Socail Media strategy
-                <span class="egy">2000 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                6 Daesigns
-                <span class="egy">1500 EGP</span>
-              </div>
-            </li>
-
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                3 Reels
-                <span class="egy">1500 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                3 Campaigns
-                <span class="egy">3000 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                Landing page
-                <span class="egy">6000 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                Marketing Strategy
-                <span class="egy">3000 EGP</span>
-              </div>
-            </li>
-          </ul>
-          <div class="total">
-            <span class="large">15000 EGP</span>
-            <span class="small"><del>1900 EGP</del> </span>
-            <span></span>
+          <div>
+            <h3 data-i18n="pk_start">Start</h3>
+            <p data-i18n="pk_start_d">
+              Perfect for small businesses taking their first step online.
+            </p>
+            <ul class="pricing-features">
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_mkt">Marketing Strategy</span>
+                  <span class="egy" data-egp="3000"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_content">Content Strategy</span>
+                  <span class="egy" data-egp="2000"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_social">Social Media Strategy</span>
+                  <span class="egy" data-egp="2000"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_d6">6 Designs</span>
+                  <span class="egy" data-egp="1500"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_r3">3 Reels</span>
+                  <span class="egy" data-egp="1500"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_c3">3 Campaigns</span>
+                  <span class="egy" data-egp="3000"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_lp">Landing page</span>
+                  <span class="egy" data-egp="6000"></span>
+                </div>
+              </li>
+            </ul>
           </div>
-          <a
-            href="https://wa.me/201039078116?text=أهلاً وسهلاً بفريق WAVE %0Aمهتم بباقة Start بسعر 15000 جنيه.%0Aممكن أعرف التفاصيل وخطوات البدء؟%0Aشكراً لكم "
-            class="btn-secondary"
-            style="width: 100%; justify-content: center"
-            >Get Started <i class="fa-solid fa-arrow-right"></i
-          ></a>
+          <div>
+            <div class="total">
+              <span class="large" data-egp="15000"></span>
+              <span class="small"><del data-egp="19000"></del></span>
+            </div>
+            <a
+              data-wa="pkg"
+              data-pkg="Start"
+              data-price="15000"
+              href="https://wa.me/201039078116"
+              class="btn-secondary"
+              style="width: 100%; justify-content: center"
+              ><span data-i18n="get_started">Get Started</span>
+              <i class="fa-solid fa-arrow-right"></i
+            ></a>
+          </div>
         </div>
+
+        <!-- STANDARD -->
         <div class="pricing-card popular reveal zoom" style="--d: 0.15s">
-          <span class="popular-badge">Most Popular</span>
-          <h3>Standard</h3>
-          <p>A complete growth system for serious businesses.</p>
-          <ul class="pricing-features">
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                Marketing Strategy
-                <span class="egy">3000 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                Content strategy
-                <span class="egy">2000 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                Socail Media strategy
-                <span class="egy">2000 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                10 Designs
-                <span class="egy">2500 EGP</span>
-              </div>
-            </li>
-
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                6 Reels
-                <span class="egy">3000 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                5 Campaigns
-                <span class="egy">5000 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                Conversion Landing page
-                <span class="egy">7000 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                Marketing Strategy
-                <span class="egy">3000 EGP</span>
-              </div>
-            </li>
-          </ul>
-          <div class="total">
-            <span class="large">20,000 EGP</span>
-            <span class="small"><del>24,500 EGP</del> </span>
+          <span class="popular-badge" data-i18n="popular">Most Popular</span>
+          <div>
+            <h3 data-i18n="pk_std">Standard</h3>
+            <p data-i18n="pk_std_d">
+              A complete growth system for serious businesses.
+            </p>
+            <ul class="pricing-features">
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_mkt">Marketing Strategy</span>
+                  <span class="egy" data-egp="3000"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_content">Content Strategy</span>
+                  <span class="egy" data-egp="2000"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_social">Social Media Strategy</span>
+                  <span class="egy" data-egp="2000"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_d10">10 Designs</span>
+                  <span class="egy" data-egp="2500"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_r6">6 Reels</span>
+                  <span class="egy" data-egp="3000"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_c5">5 Campaigns</span>
+                  <span class="egy" data-egp="5000"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_lpc">Conversion Landing page</span>
+                  <span class="egy" data-egp="7000"></span>
+                </div>
+              </li>
+            </ul>
           </div>
-          <a
-            href="https://wa.me/201039078116?text=أهلاً وسهلاً بفريق WAVE %0Aمهتم بباقة Standard بسعر 20000 جنيه.%0Aممكن أعرف التفاصيل وخطوات البدء؟%0Aشكراً لكم "
-            class="btn-primary"
-            style="width: 100%; justify-content: center"
-            >Choose Standard <i class="fa-solid fa-arrow-right"></i
-          ></a>
+          <div>
+            <div class="total">
+              <span class="large" data-egp="20000"></span>
+              <span class="small"><del data-egp="24500"></del></span>
+            </div>
+            <a
+              data-wa="pkg"
+              data-pkg="Standard"
+              data-price="20000"
+              href="https://wa.me/201039078116"
+              class="btn-primary"
+              style="width: 100%; justify-content: center"
+              ><span data-i18n="choose_std">Choose Standard</span>
+              <i class="fa-solid fa-arrow-right"></i
+            ></a>
+          </div>
         </div>
+
+        <!-- PRO -->
         <div class="pricing-card reveal from-right" style="--d: 0.3s">
-          <h3>Pro</h3>
-          <p>For established brands ready to scale faster.</p>
-          <ul class="pricing-features">
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                Advanced Marketing Strategy
-                <span class="egy">5000 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                Advanced Content strategy
-                <span class="egy">3000 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                Advanced Socail Media strategy
-                <span class="egy">3000 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                16 Designs
-                <span class="egy">4000 EGP</span>
-              </div>
-            </li>
-
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                10 Reels
-                <span class="egy">5000 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                8 Campaigns
-                <span class="egy">8000 EGP</span>
-              </div>
-            </li>
-            <li>
-              <i class="fa-solid fa-check"></i>
-              <div class="spans">
-                Multiplie Landing page &nbsp; or <br />
-                Shopify Development
-                <span class="egy">10000 EGP</span>
-              </div>
-            </li>
-          </ul>
-          <div class="total">
-            <span class="large">35,500 EGP</span>
-            <span class="small"><del>38,000 EGP</del> </span>
+          <div>
+            <h3 data-i18n="pk_pro">Pro</h3>
+            <p data-i18n="pk_pro_d">
+              For established brands ready to scale faster.
+            </p>
+            <ul class="pricing-features">
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_amkt">Advanced Marketing Strategy</span>
+                  <span class="egy" data-egp="5000"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_acontent">Advanced Content Strategy</span>
+                  <span class="egy" data-egp="3000"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_asocial"
+                    >Advanced Social Media Strategy</span
+                  >
+                  <span class="egy" data-egp="3000"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_d16">16 Designs</span>
+                  <span class="egy" data-egp="4000"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_r10">10 Reels</span>
+                  <span class="egy" data-egp="5000"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n="f_c8">8 Campaigns</span>
+                  <span class="egy" data-egp="8000"></span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-check"></i>
+                <div class="spans">
+                  <span data-i18n-html="f_multi"
+                    >Multiple Landing pages or <br />Shopify Development</span
+                  >
+                  <span class="egy" data-egp="10000"></span>
+                </div>
+              </li>
+            </ul>
           </div>
-
-          <a
-            href="https://wa.me/201039078116?text=أهلاً وسهلاً بفريق WAVE %0Aمهتم بباقة Pro بسعر 35500 جنيه.%0Aممكن أعرف التفاصيل وخطوات البدء؟%0Aشكراً لكم "
-            class="btn-secondary"
-            style="width: 100%; justify-content: center"
-            >Choose Pro <i class="fa-solid fa-arrow-right"></i
-          ></a>
+          <div>
+            <div class="total">
+              <span class="large" data-egp="35500"></span>
+              <span class="small"><del data-egp="38000"></del></span>
+            </div>
+            <a
+              data-wa="pkg"
+              data-pkg="Pro"
+              data-price="35500"
+              href="https://wa.me/201039078116"
+              class="btn-secondary"
+              style="width: 100%; justify-content: center"
+              ><span data-i18n="choose_pro">Choose Pro</span>
+              <i class="fa-solid fa-arrow-right"></i
+            ></a>
+          </div>
         </div>
       </div>
     </section>
 
     <section class="pricing pricing-single" id="pricing2">
       <div class="section-header reveal">
-        <h4>BUILD YOUR PLAN</h4>
-        <h2>
+        <h4 data-i18n="c_tag">BUILD YOUR PLAN</h4>
+        <h2 data-i18n="c_title">
           Choose exactly what your business needs and create your own customized
           plan.
         </h2>
-        <p>
-          Not sure what to choose? Let’s talk. Tell us about your business, and
-          we’ll recommend the right services and strategy for you.
+        <p data-i18n="c_desc">
+          Not sure what to choose? Let's talk. Tell us about your business, and
+          we'll recommend the right services and strategy for you.
         </p>
       </div>
 
       <div class="pricing-grid">
         <div class="pricing-card reveal zoom">
-          <h3>custimize</h3>
-          <p>you can choose from list of packetges a special details</p>
+          <div>
+            <h3 data-i18n="c_card">Customize</h3>
+            <p data-i18n="c_card_d">
+              Pick exactly the services you need from the list below.
+            </p>
 
-          <ul class="pricing-features">
-            <li>
-              <label class="pkg-item">
-                <input
-                  type="checkbox"
-                  class="pkg-check"
-                  data-name="Advanced Marketing Strategy"
-                  data-price="5000"
-                />
-                <span class="pkg-box"><i class="fa-solid fa-check"></i></span>
-                <span class="pkg-name">Advanced Marketing Strategy</span>
-                <span class="egy">5000 EGP</span>
-              </label>
-            </li>
-            <li>
-              <label class="pkg-item">
-                <input
-                  type="checkbox"
-                  class="pkg-check"
-                  data-name="Advanced Content strategy"
-                  data-price="3000"
-                />
-                <span class="pkg-box"><i class="fa-solid fa-check"></i></span>
-                <span class="pkg-name">Advanced Content strategy</span>
-                <span class="egy">3000 EGP</span>
-              </label>
-            </li>
-            <li>
-              <label class="pkg-item">
-                <input
-                  type="checkbox"
-                  class="pkg-check"
-                  data-name="Advanced Social Media strategy"
-                  data-price="3000"
-                />
-                <span class="pkg-box"><i class="fa-solid fa-check"></i></span>
-                <span class="pkg-name">Advanced Social Media strategy</span>
-                <span class="egy">3000 EGP</span>
-              </label>
-            </li>
-
-            <li>
-              <div
-                class="pkg-item pkg-counter"
-                data-unit="250"
-                data-one="Design"
-                data-many="Designs"
-              >
-                <span class="pkg-name"
-                  >Designs
-                  <small class="unit-price">250 EGP / design</small></span
-                >
-                <div class="qty">
-                  <button
-                    type="button"
-                    class="qty-btn"
-                    data-action="minus"
-                    aria-label="Decrease"
-                  >
-                    −
-                  </button>
+            <ul class="pricing-features">
+              <li>
+                <label class="pkg-item">
                   <input
-                    type="number"
-                    class="qty-input"
-                    value="0"
-                    min="0"
-                    max="50"
-                    inputmode="numeric"
+                    type="checkbox"
+                    class="pkg-check"
+                    data-key="f_amkt"
+                    data-price="5000"
                   />
-                  <button
-                    type="button"
-                    class="qty-btn"
-                    data-action="plus"
-                    aria-label="Increase"
+                  <span class="pkg-box"><i class="fa-solid fa-check"></i></span>
+                  <span class="pkg-name" data-i18n="f_amkt"
+                    >Advanced Marketing Strategy</span
                   >
-                    +
-                  </button>
-                </div>
-                <span class="egy line-price">0 EGP</span>
-              </div>
-            </li>
-            <li>
-              <div
-                class="pkg-item pkg-counter"
-                data-unit="500"
-                data-one="Reel"
-                data-many="Reels"
-              >
-                <span class="pkg-name"
-                  >Reels <small class="unit-price">500 EGP / reel</small></span
-                >
-                <div class="qty">
-                  <button
-                    type="button"
-                    class="qty-btn"
-                    data-action="minus"
-                    aria-label="Decrease"
-                  >
-                    −
-                  </button>
+                  <span class="egy" data-egp="5000"></span>
+                </label>
+              </li>
+              <li>
+                <label class="pkg-item">
                   <input
-                    type="number"
-                    class="qty-input"
-                    value="0"
-                    min="0"
-                    max="50"
-                    inputmode="numeric"
+                    type="checkbox"
+                    class="pkg-check"
+                    data-key="f_acontent"
+                    data-price="3000"
                   />
-                  <button
-                    type="button"
-                    class="qty-btn"
-                    data-action="plus"
-                    aria-label="Increase"
+                  <span class="pkg-box"><i class="fa-solid fa-check"></i></span>
+                  <span class="pkg-name" data-i18n="f_acontent"
+                    >Advanced Content Strategy</span
                   >
-                    +
-                  </button>
-                </div>
-                <span class="egy line-price">0 EGP</span>
-              </div>
-            </li>
-            <li>
-              <div
-                class="pkg-item pkg-counter"
-                data-unit="1000"
-                data-one="Campaign"
-                data-many="Campaigns"
-              >
-                <span class="pkg-name"
-                  >Campaigns
-                  <small class="unit-price">1000 EGP / campaign</small></span
-                >
-                <div class="qty">
-                  <button
-                    type="button"
-                    class="qty-btn"
-                    data-action="minus"
-                    aria-label="Decrease"
-                  >
-                    −
-                  </button>
+                  <span class="egy" data-egp="3000"></span>
+                </label>
+              </li>
+              <li>
+                <label class="pkg-item">
                   <input
-                    type="number"
-                    class="qty-input"
-                    value="0"
-                    min="0"
-                    max="50"
-                    inputmode="numeric"
+                    type="checkbox"
+                    class="pkg-check"
+                    data-key="f_asocial"
+                    data-price="3000"
                   />
-                  <button
-                    type="button"
-                    class="qty-btn"
-                    data-action="plus"
-                    aria-label="Increase"
+                  <span class="pkg-box"><i class="fa-solid fa-check"></i></span>
+                  <span class="pkg-name" data-i18n="f_asocial"
+                    >Advanced Social Media Strategy</span
                   >
-                    +
-                  </button>
+                  <span class="egy" data-egp="3000"></span>
+                </label>
+              </li>
+
+              <li>
+                <div
+                  class="pkg-item pkg-counter"
+                  data-unit="250"
+                  data-one="one_design"
+                  data-many="many_designs"
+                >
+                  <span class="pkg-name"
+                    ><span data-i18n="designs">Designs</span>
+                    <small
+                      class="unit-price"
+                      data-unit-n="250"
+                      data-per="per_design"
+                    ></small
+                  ></span>
+                  <div class="qty">
+                    <button
+                      type="button"
+                      class="qty-btn"
+                      data-action="minus"
+                      aria-label="Decrease"
+                    >
+                      −
+                    </button>
+                    <input
+                      type="number"
+                      class="qty-input"
+                      value="0"
+                      min="0"
+                      max="50"
+                      inputmode="numeric"
+                    />
+                    <button
+                      type="button"
+                      class="qty-btn"
+                      data-action="plus"
+                      aria-label="Increase"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <span class="egy line-price">0</span>
                 </div>
-                <span class="egy line-price">0 EGP</span>
-              </div>
-            </li>
+              </li>
+              <li>
+                <div
+                  class="pkg-item pkg-counter"
+                  data-unit="500"
+                  data-one="one_reel"
+                  data-many="many_reels"
+                >
+                  <span class="pkg-name"
+                    ><span data-i18n="reels">Reels</span>
+                    <small
+                      class="unit-price"
+                      data-unit-n="500"
+                      data-per="per_reel"
+                    ></small
+                  ></span>
+                  <div class="qty">
+                    <button
+                      type="button"
+                      class="qty-btn"
+                      data-action="minus"
+                      aria-label="Decrease"
+                    >
+                      −
+                    </button>
+                    <input
+                      type="number"
+                      class="qty-input"
+                      value="0"
+                      min="0"
+                      max="50"
+                      inputmode="numeric"
+                    />
+                    <button
+                      type="button"
+                      class="qty-btn"
+                      data-action="plus"
+                      aria-label="Increase"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <span class="egy line-price">0</span>
+                </div>
+              </li>
+              <li>
+                <div
+                  class="pkg-item pkg-counter"
+                  data-unit="1000"
+                  data-one="one_campaign"
+                  data-many="many_campaigns"
+                >
+                  <span class="pkg-name"
+                    ><span data-i18n="campaigns">Campaigns</span>
+                    <small
+                      class="unit-price"
+                      data-unit-n="1000"
+                      data-per="per_campaign"
+                    ></small
+                  ></span>
+                  <div class="qty">
+                    <button
+                      type="button"
+                      class="qty-btn"
+                      data-action="minus"
+                      aria-label="Decrease"
+                    >
+                      −
+                    </button>
+                    <input
+                      type="number"
+                      class="qty-input"
+                      value="0"
+                      min="0"
+                      max="50"
+                      inputmode="numeric"
+                    />
+                    <button
+                      type="button"
+                      class="qty-btn"
+                      data-action="plus"
+                      aria-label="Increase"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <span class="egy line-price">0</span>
+                </div>
+              </li>
 
-            <li>
-              <label class="pkg-item">
-                <input
-                  type="checkbox"
-                  class="pkg-check"
-                  data-name="Multiple Landing pages"
-                  data-price="10000"
-                />
-                <span class="pkg-box"><i class="fa-solid fa-check"></i></span>
-                <span class="pkg-name">Multiple Landing pages</span>
-                <span class="egy">10000 EGP</span>
-              </label>
-            </li>
-            <li>
-              <label class="pkg-item">
-                <input
-                  type="checkbox"
-                  class="pkg-check"
-                  data-name="Shopify Development"
-                  data-price="10000"
-                />
-                <span class="pkg-box"><i class="fa-solid fa-check"></i></span>
-                <span class="pkg-name">Shopify Development</span>
-                <span class="egy">10000 EGP</span>
-              </label>
-            </li>
-          </ul>
-
-          <div class="total" aria-live="polite">
-            <span class="large" id="totalPrice">0 EGP</span>
-            <span class="small" id="selectedCount">0 selected</span>
+              <li>
+                <label class="pkg-item">
+                  <input
+                    type="checkbox"
+                    class="pkg-check"
+                    data-key="f_multilp"
+                    data-price="10000"
+                  />
+                  <span class="pkg-box"><i class="fa-solid fa-check"></i></span>
+                  <span class="pkg-name" data-i18n="f_multilp"
+                    >Multiple Landing pages</span
+                  >
+                  <span class="egy" data-egp="10000"></span>
+                </label>
+              </li>
+              <li>
+                <label class="pkg-item">
+                  <input
+                    type="checkbox"
+                    class="pkg-check"
+                    data-key="f_shopify"
+                    data-price="10000"
+                  />
+                  <span class="pkg-box"><i class="fa-solid fa-check"></i></span>
+                  <span class="pkg-name" data-i18n="f_shopify"
+                    >Shopify or Web Development</span
+                  >
+                  <span
+                    class="egy"
+                    data-egp="10000"
+                    data-pre="starts_from"
+                  ></span>
+                </label>
+              </li>
+            </ul>
           </div>
 
-          <a
-            id="chooseBtn"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn-secondary"
-            style="width: 100%; justify-content: center"
-            >Choose Pro <i class="fa-solid fa-arrow-right"></i
-          ></a>
+          <div>
+            <div class="total" aria-live="polite">
+              <span class="large" id="totalPrice">0</span>
+              <span class="small" id="selectedCount">0</span>
+            </div>
+
+            <a
+              id="chooseBtn"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-secondary"
+              style="width: 100%; justify-content: center"
+              ><span data-i18n="build_btn">Let's Build</span
+              ><i class="fa-solid fa-arrow-right"></i
+            ></a>
+          </div>
         </div>
       </div>
     </section>
 
     <section class="social" id="social">
       <div class="section-header reveal">
-        <h4>Follow Us</h4>
-        <h2>Stay Connected With WAVE</h2>
-        <p>
+        <h4 data-i18n="sc_tag">Follow Us</h4>
+        <h2 data-i18n="sc_title">Stay Connected With WAVE</h2>
+        <p data-i18n="sc_desc">
           Follow our channels for fresh ideas, campaign results and the latest
           updates, or message us directly to start your project.
         </p>
@@ -2325,7 +2725,7 @@
           </div>
           <div class="social-info">
             <h3>Facebook</h3>
-            <p>News, offers and client stories.</p>
+            <p data-i18n="fb_d">News, offers and client stories.</p>
           </div>
           <span class="social-arrow"
             ><i class="fa-solid fa-arrow-right"></i
@@ -2343,7 +2743,7 @@
           </div>
           <div class="social-info">
             <h3>Instagram</h3>
-            <p>Creative work, reels and behind the scenes.</p>
+            <p data-i18n="ig_d">Creative work, reels and behind the scenes.</p>
           </div>
           <span class="social-arrow"
             ><i class="fa-solid fa-arrow-right"></i
@@ -2361,7 +2761,7 @@
           </div>
           <div class="social-info">
             <h3>TikTok</h3>
-            <p>Short videos and marketing tips.</p>
+            <p data-i18n="tt_d">Short videos and marketing tips.</p>
           </div>
           <span class="social-arrow"
             ><i class="fa-solid fa-arrow-right"></i
@@ -2370,7 +2770,8 @@
 
         <a
           class="social-card reveal"
-          href="https://wa.me/201039078116?text=مرحبا%20WAVE%2C%20عايز%20أعرف%20أكتر%20عن%20خدماتكم"
+          data-wa="general"
+          href="https://wa.me/201039078116"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -2379,7 +2780,7 @@
           </div>
           <div class="social-info">
             <h3>WhatsApp</h3>
-            <p>Chat with us directly and get a quick reply.</p>
+            <p data-i18n="wa_d">Chat with us directly and get a quick reply.</p>
           </div>
           <span class="social-arrow"
             ><i class="fa-solid fa-arrow-right"></i
@@ -2387,45 +2788,405 @@
         </a>
       </div>
     </section>
+
     <div class="offcanvas-overlay" id="offcanvasOverlay"></div>
     <div class="offcanvas-menu" id="offcanvasMenu">
       <div class="offcanvas-header">
-        <span class="offcanvas-title">Menu</span>
-        <button class="close-btn" id="closeMenuBtn">&times;</button>
+        <span class="offcanvas-title" data-i18n="menu">Menu</span>
+        <button class="close-btn" id="closeMenuBtn" aria-label="Close">
+          &times;
+        </button>
       </div>
       <div class="offcanvas-body">
         <ul class="nav-links">
-          <li><a href="#">Home</a></li>
-          <li><a href="#services">Services</a></li>
-          <li><a href="#pricing">Packages</a></li>
-          <li class="licust"><a href="#pricing2">Customized package</a></li>
-          <li><a href="#social">Contact</a></li>
+          <li><a href="#" data-i18n="nav_home">Home</a></li>
+          <li><a href="#services" data-i18n="nav_services">Services</a></li>
+          <li><a href="#pricing" data-i18n="nav_packages">Packages</a></li>
+          <li>
+            <a href="#pricing2" data-i18n="nav_custom">Customized package</a>
+          </li>
+          <li><a href="#social" data-i18n="nav_contact">Contact</a></li>
         </ul>
         <div class="nav-btn-container">
           <a
             class="nav-btn"
-            href="https://wa.me/201039078116?text=مرحبا%20WAVE%2C%20عايز%20أعرف%20أكتر%20عن%20خدماتكم"
+            data-wa="general"
+            href="https://wa.me/201039078116"
           >
-            Book a Free Consultation →
+            <span data-i18n="book">Book a Free Consultation</span>
+            <i class="fa-solid fa-arrow-right"></i>
           </a>
         </div>
       </div>
     </div>
 
     <footer class="reveal">
-      <p>&copy; 2026 WAVE Digital Agency. All rights reserved.</p>
+      <div class="footer-features">
+        <div class="feature">
+          <i class="fa-regular fa-clock"></i>
+          <span data-i18n="ft1">On-Time Delivery</span>
+        </div>
+
+        <div class="feature">
+          <i class="fa-solid fa-headset"></i>
+          <span data-i18n="ft2">Dedicated Support</span>
+        </div>
+
+        <div class="feature">
+          <i class="fa-regular fa-circle-check"></i>
+          <span data-i18n="ft3">Reliable Service</span>
+        </div>
+
+        <div class="feature">
+          <i class="fa-solid fa-arrow-trend-up"></i>
+          <span data-i18n="ft4">Growth-Focused</span>
+        </div>
+      </div>
+
+      <p data-i18n="copy">
+        &copy; 2026 WAVE Digital Agency. All rights reserved.
+      </p>
     </footer>
 
     <a
-      href="https://wa.me/201039078116?text=مرحبا%20WAVE%2C%20عايز%20أعرف%20أكتر%20عن%20خدماتكم"
+      data-wa="general"
+      href="https://wa.me/201039078116"
       class="whatsapp-float"
       target="_blank"
-      rel=""
+      rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
     >
       <i class="fa-brands fa-whatsapp"></i>
     </a>
 
+    <!-- ===================== Language / translations ===================== -->
+    <script>
+      (function () {
+        const WHATSAPP_NUMBER = "201039078116";
+        const STORAGE_KEY = "wave-lang";
+
+        const I18N = {
+          en: {
+            title: "WAVE - Digital Marketing & Web Agency",
+            nav_home: "Home",
+            nav_services: "Services",
+            nav_packages: "Packages",
+            nav_custom: "Customized package",
+            nav_contact: "Contact",
+            menu: "Menu",
+            book: "Book a Free Consultation",
+            hero_tag: "Digital Marketing & Web Agency",
+            hero_title: "Go <span>Beyond.</span>",
+            hero_desc:
+              "We help businesses grow through strategy, content, paid ads and high-performing websites — all connected for real results.",
+            hero_cta2: "Let's Build Your Next Wave",
+
+            s_tag: "Our Services",
+            s_title: "Everything You Need to Grow Online",
+            s_desc:
+              "From strategy to execution, we provide end-to-end digital solutions that help your business attract, convert and scale.",
+            explore: "Explore Service",
+            sv1_t: "Shopify Store Development",
+            sv1_d: "High-converting, scalable online stores built for growth.",
+            sv2_t: "Website Development and Optimization",
+            sv2_d: "Faster, smarter, higher converting websites.",
+            sv3_t: "Social Media Marketing",
+            sv3_d: "Strategic content that builds brand and drives sales.",
+            sv4_t: "Paid Ads",
+            sv4_d:
+              "Result-driven ad campaigns on Meta, Google, TikTok and more.",
+            sv5_t: "Content & Creative Strategy",
+            sv5_d: "Scroll-stopping content with a clear strategy.",
+
+            p_tag: "Our Packages",
+            p_title: "Flexible Plans for Every Stage",
+            p_desc:
+              "Whether you're just getting started or ready to scale, we have a plan that fits your goals.",
+            popular: "Most Popular",
+            pk_start: "Start",
+            pk_start_d:
+              "Perfect for small businesses taking their first step online.",
+            pk_std: "Standard",
+            pk_std_d: "A complete growth system for serious businesses.",
+            pk_pro: "Pro",
+            pk_pro_d: "For established brands ready to scale faster.",
+            get_started: "Get Started",
+            choose_std: "Choose Standard",
+            choose_pro: "Choose Pro",
+
+            f_mkt: "Marketing Strategy",
+            f_content: "Content Strategy",
+            f_social: "Social Media Strategy",
+            f_amkt: "Advanced Marketing Strategy",
+            f_acontent: "Advanced Content Strategy",
+            f_asocial: "Advanced Social Media Strategy",
+            f_d6: "6 Designs",
+            f_d10: "10 Designs",
+            f_d16: "16 Designs",
+            f_r3: "3 Reels",
+            f_r6: "6 Reels",
+            f_r10: "10 Reels",
+            f_c3: "3 Campaigns",
+            f_c5: "5 Campaigns",
+            f_c8: "8 Campaigns",
+            f_lp: "Landing page",
+            f_lpc: "Conversion Landing page",
+            f_multi: "Multiple Landing pages or <br />Shopify Development",
+            f_multilp: "Multiple Landing pages",
+            f_shopify: "Shopify or Web Development",
+
+            c_tag: "BUILD YOUR PLAN",
+            c_title:
+              "Choose exactly what your business needs and create your own customized plan.",
+            c_desc:
+              "Not sure what to choose? Let's talk. Tell us about your business, and we'll recommend the right services and strategy for you.",
+            c_card: "Customize",
+            c_card_d: "Pick exactly the services you need from the list below.",
+            designs: "Designs",
+            reels: "Reels",
+            campaigns: "Campaigns",
+            per_design: "design",
+            per_reel: "reel",
+            per_campaign: "campaign",
+            one_design: "Design",
+            many_designs: "Designs",
+            one_reel: "Reel",
+            many_reels: "Reels",
+            one_campaign: "Campaign",
+            many_campaigns: "Campaigns",
+            starts_from: "Start",
+            egp: "EGP",
+            selected_count: "{a} of {b} selected",
+            no_items: "No items selected yet",
+            build_btn: "Let's Build",
+            total_word: "Total",
+
+            sc_tag: "Follow Us",
+            sc_title: "Stay Connected With WAVE",
+            sc_desc:
+              "Follow our channels for fresh ideas, campaign results and the latest updates, or message us directly to start your project.",
+            fb_d: "News, offers and client stories.",
+            ig_d: "Creative work, reels and behind the scenes.",
+            tt_d: "Short videos and marketing tips.",
+            wa_d: "Chat with us directly and get a quick reply.",
+
+            ft1: "On-Time Delivery",
+            ft2: "Dedicated Support",
+            ft3: "Reliable Service",
+            ft4: "Growth-Focused",
+            copy: "© 2026 WAVE Digital Agency. All rights reserved.",
+
+            wa_general: "Hello WAVE, I'd like to know more about your services",
+            wa_pkg:
+              "Hello WAVE team\nI'm interested in the {name} package at {price} EGP.\nCould you share the details and how to get started?\nThank you",
+            wa_custom:
+              "Hello WAVE, I'd like to subscribe to the BUILD YOUR PLAN package with these selected services:",
+          },
+
+          ar: {
+            title: "ويف - وكالة تسويق رقمي وتطوير مواقع",
+            nav_home: "الرئيسية",
+            nav_services: "خدماتنا",
+            nav_packages: "الباقات",
+            nav_custom: "باقة مخصصة",
+            nav_contact: "تواصل معنا",
+            menu: "القائمة",
+            book: "احجز استشارتك المجانية",
+            hero_tag: "وكالة تسويق رقمي وتطوير مواقع",
+            hero_title: "تخطَّ <span>الحدود.</span>",
+            hero_desc:
+              "نساعد الشركات على النمو من خلال الاستراتيجية والمحتوى والإعلانات الممولة والمواقع عالية الأداء — كلها مترابطة لتحقيق نتائج حقيقية.",
+            hero_cta2: "لنصنع موجتك القادمة",
+
+            s_tag: "خدماتنا",
+            s_title: "كل ما تحتاجه للنمو أونلاين",
+            s_desc:
+              "من الاستراتيجية إلى التنفيذ، نقدم حلولًا رقمية متكاملة تساعد نشاطك على جذب العملاء وتحويلهم والتوسع.",
+            explore: "اكتشف الخدمة",
+            sv1_t: "تطوير متاجر Shopify",
+            sv1_d: "متاجر إلكترونية قابلة للتوسع وعالية التحويل مبنية للنمو.",
+            sv2_t: "تطوير وتحسين المواقع",
+            sv2_d: "مواقع أسرع وأذكى وأعلى تحويلًا.",
+            sv3_t: "التسويق عبر السوشيال ميديا",
+            sv3_d: "محتوى استراتيجي يبني علامتك التجارية ويزيد مبيعاتك.",
+            sv4_t: "الإعلانات الممولة",
+            sv4_d:
+              "حملات إعلانية تركّز على النتائج على ميتا وجوجل وتيك توك وغيرها.",
+            sv5_t: "المحتوى والاستراتيجية الإبداعية",
+            sv5_d: "محتوى يلفت الأنظار بخطة واضحة.",
+
+            p_tag: "باقاتنا",
+            p_title: "خطط مرنة لكل مرحلة",
+            p_desc:
+              "سواء كنت في البداية أو جاهزًا للتوسع، لدينا خطة تناسب أهدافك.",
+            popular: "الأكثر طلبًا",
+            pk_start: "Start",
+            pk_start_d: "مثالية للأنشطة الصغيرة في أولى خطواتها أونلاين.",
+            pk_std: "Standard",
+            pk_std_d: "نظام نمو متكامل للشركات الجادة.",
+            pk_pro: "Pro",
+            pk_pro_d: "للعلامات الراسخة الجاهزة للتوسع بشكل أسرع.",
+            get_started: "ابدأ الآن",
+            choose_std: "اختر Standard",
+            choose_pro: "اختر Pro",
+
+            f_mkt: "استراتيجية التسويق",
+            f_content: "استراتيجية المحتوى",
+            f_social: "استراتيجية السوشيال ميديا",
+            f_amkt: "استراتيجية تسويق متقدمة",
+            f_acontent: "استراتيجية محتوى متقدمة",
+            f_asocial: "استراتيجية سوشيال ميديا متقدمة",
+            f_d6: "6 تصميمات",
+            f_d10: "10 تصميمات",
+            f_d16: "16 تصميم",
+            f_r3: "3 ريلز",
+            f_r6: "6 ريلز",
+            f_r10: "10 ريلز",
+            f_c3: "3 حملات",
+            f_c5: "5 حملات",
+            f_c8: "8 حملات",
+            f_lp: "صفحة هبوط",
+            f_lpc: "صفحة هبوط عالية التحويل",
+            f_multi: "عدة صفحات هبوط أو <br />تطوير متجر Shopify",
+            f_multilp: "عدة صفحات هبوط",
+            f_shopify: "تطوير متجر Shopify أو موقع",
+
+            c_tag: "ابنِ باقتك",
+            c_title: "اختر بالضبط ما يحتاجه نشاطك وابنِ باقتك المخصصة.",
+            c_desc:
+              "لست متأكدًا مما تختار؟ دعنا نتحدث. أخبرنا عن نشاطك وسنقترح عليك الخدمات والاستراتيجية المناسبة.",
+            c_card: "باقة مخصصة",
+            c_card_d: "اختر الخدمات التي تحتاجها بالضبط من القائمة التالية.",
+            designs: "التصميمات",
+            reels: "الريلز",
+            campaigns: "الحملات",
+            per_design: "تصميم",
+            per_reel: "ريل",
+            per_campaign: "حملة",
+            one_design: "تصميم",
+            many_designs: "تصميمات",
+            one_reel: "ريل",
+            many_reels: "ريلز",
+            one_campaign: "حملة",
+            many_campaigns: "حملات",
+            starts_from: "يبدأ من",
+            egp: "جنيه",
+            selected_count: "تم اختيار {a} من {b}",
+            no_items: "لم يتم اختيار أي عنصر بعد",
+            build_btn: "لنبدأ البناء",
+            total_word: "الإجمالي",
+
+            sc_tag: "تابعنا",
+            sc_title: "ابقَ على تواصل مع ويف",
+            sc_desc:
+              "تابع قنواتنا لأحدث الأفكار ونتائج الحملات والتحديثات، أو راسلنا مباشرة لنبدأ مشروعك.",
+            fb_d: "أخبار وعروض وقصص عملائنا.",
+            ig_d: "أعمال إبداعية وريلز وكواليس العمل.",
+            tt_d: "فيديوهات قصيرة ونصائح تسويقية.",
+            wa_d: "تحدث معنا مباشرة واحصل على رد سريع.",
+
+            ft1: "تسليم في الموعد",
+            ft2: "دعم مخصص",
+            ft3: "خدمة موثوقة",
+            ft4: "تركيز على النمو",
+            copy: "© 2026 ويف للتسويق الرقمي. جميع الحقوق محفوظة.",
+
+            wa_general: "مرحبا WAVE، عايز أعرف أكتر عن خدماتكم",
+            wa_pkg:
+              "أهلاً وسهلاً بفريق WAVE\nمهتم بباقة {name} بسعر {price} جنيه.\nممكن أعرف التفاصيل وخطوات البدء؟\nشكراً لكم",
+            wa_custom:
+              "مرحبا WAVE، عايز أشترك في باقة BUILD YOUR PLAN وأختار الخدمات المعينة:",
+          },
+        };
+
+        let lang = document.documentElement.lang === "ar" ? "ar" : "en";
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved === "ar" || saved === "en") lang = saved;
+        } catch (e) {}
+
+        const t = (k) => (I18N[lang] && I18N[lang][k]) || I18N.en[k] || k;
+        const fmt = (n) => Number(n).toLocaleString("en-US");
+        const qsa = (s) => document.querySelectorAll(s);
+
+        function waHref(el) {
+          let msg = t("wa_general");
+          if (el.dataset.wa === "pkg") {
+            msg = t("wa_pkg")
+              .replace("{name}", el.dataset.pkg)
+              .replace("{price}", el.dataset.price);
+          }
+          return (
+            "https://wa.me/" +
+            WHATSAPP_NUMBER +
+            "?text=" +
+            encodeURIComponent(msg)
+          );
+        }
+
+        function apply() {
+          const html = document.documentElement;
+          html.lang = lang;
+          html.dir = lang === "ar" ? "rtl" : "ltr";
+          document.title = t("title");
+
+          qsa("[data-i18n]").forEach((el) => {
+            el.textContent = t(el.dataset.i18n);
+          });
+          qsa("[data-i18n-html]").forEach((el) => {
+            el.innerHTML = t(el.dataset.i18nHtml);
+          });
+
+          qsa("[data-egp]").forEach((el) => {
+            const pre = el.dataset.pre ? t(el.dataset.pre) + " " : "";
+            el.textContent = pre + fmt(el.dataset.egp) + " " + t("egp");
+          });
+
+          qsa("[data-per]").forEach((el) => {
+            el.textContent =
+              fmt(el.dataset.unitN) +
+              " " +
+              t("egp") +
+              " / " +
+              t(el.dataset.per);
+          });
+
+          qsa("[data-wa]").forEach((el) => {
+            el.href = waHref(el);
+          });
+
+          qsa(".lang-switch span").forEach((s) => {
+            s.classList.toggle("on", s.dataset.l === lang);
+          });
+
+          document.dispatchEvent(new CustomEvent("langchange"));
+        }
+
+        function setLang(l) {
+          lang = l;
+          try {
+            localStorage.setItem(STORAGE_KEY, lang);
+          } catch (e) {}
+          apply();
+        }
+
+        document.getElementById("langSwitch").addEventListener("click", () => {
+          setLang(lang === "en" ? "ar" : "en");
+        });
+
+        window.WaveI18n = {
+          t: t,
+          fmt: fmt,
+          get lang() {
+            return lang;
+          },
+        };
+
+        apply();
+      })();
+    </script>
+
+    <!-- ===================== Page animations & behaviour ===================== -->
     <script>
       (function () {
         const body = document.body;
@@ -2519,6 +3280,7 @@
           },
           { passive: true },
         );
+        window.addEventListener("resize", onScroll, { passive: true });
         onScroll();
 
         document.querySelectorAll(".service-card").forEach((card) => {
@@ -2530,8 +3292,10 @@
         });
       })();
 
+      /* ---------- Custom plan builder + mobile menu ---------- */
       (function () {
         const WHATSAPP_NUMBER = "201039078116";
+        const T = (k) => window.WaveI18n.t(k);
 
         const checks = document.querySelectorAll(".pkg-check");
         const counters = document.querySelectorAll(".pkg-counter");
@@ -2563,20 +3327,6 @@
           totalBox.parentNode.insertBefore(listEl, totalBox);
         }
 
-        function getName(c) {
-          if (c.dataset.name) return c.dataset.name;
-          const label = c.closest("label");
-          const n = label && label.querySelector(".pkg-name");
-          return n ? n.textContent.trim() : "Item";
-        }
-
-        function getPrice(c) {
-          if (c.dataset.price) return Number(c.dataset.price);
-          const label = c.closest("label");
-          const p = label && label.querySelector(".egy");
-          return p ? Number(p.textContent.replace(/[^\d]/g, "")) : 0;
-        }
-
         function getQty(input) {
           return clamp(
             parseInt(input.value, 10) || 0,
@@ -2591,7 +3341,7 @@
           if (picked.length === 0) {
             const li = document.createElement("li");
             li.className = "sel-empty";
-            li.textContent = "No items selected yet";
+            li.textContent = T("no_items");
             listEl.appendChild(li);
             return;
           }
@@ -2605,7 +3355,7 @@
 
             const price = document.createElement("span");
             price.className = "sel-price";
-            price.textContent = fmt(p.price) + " EGP";
+            price.textContent = fmt(p.price) + " " + T("egp");
 
             li.appendChild(name);
             li.appendChild(price);
@@ -2619,9 +3369,9 @@
 
           checks.forEach((c) => {
             if (c.checked) {
-              const price = getPrice(c);
+              const price = Number(c.dataset.price) || 0;
               total += price;
-              picked.push({ name: getName(c), price });
+              picked.push({ name: T(c.dataset.key), price });
             }
           });
 
@@ -2630,25 +3380,27 @@
             const qty = getQty(input);
             const price = qty * Number(row.dataset.unit);
 
-            row.querySelector(".line-price").textContent = fmt(price) + " EGP";
+            row.querySelector(".line-price").textContent =
+              fmt(price) + " " + T("egp");
             row.classList.toggle("active", qty > 0);
 
             if (qty > 0) {
               total += price;
-              const label = qty === 1 ? row.dataset.one : row.dataset.many;
+              const label = T(qty === 1 ? row.dataset.one : row.dataset.many);
               picked.push({ name: qty + " " + label, price });
             }
           });
 
-          totalEl.textContent = fmt(total) + " EGP";
+          totalEl.textContent = fmt(total) + " " + T("egp");
           if (total !== lastTotal) {
             totalEl.classList.remove("bump");
             void totalEl.offsetWidth;
             totalEl.classList.add("bump");
             lastTotal = total;
           }
-          countEl.textContent =
-            picked.length + " of " + totalItems + " selected";
+          countEl.textContent = T("selected_count")
+            .replace("{a}", picked.length)
+            .replace("{b}", totalItems);
           renderList(picked);
 
           if (picked.length === 0) {
@@ -2662,14 +3414,20 @@
           btn.removeAttribute("aria-disabled");
 
           const lines = picked
-            .map((p) => "- " + p.name + " (" + fmt(p.price) + " EGP)")
+            .map(
+              (p) => "- " + p.name + " (" + fmt(p.price) + " " + T("egp") + ")",
+            )
             .join("\n");
           const message =
-            "مرحبا WAVE، عايز أشترك في باقة BUILD YOUR PLAN وأختار الخدمات معينه:\n" +
+            T("wa_custom") +
+            "\n" +
             lines +
-            "\nالإجمالي: " +
+            "\n" +
+            T("total_word") +
+            ": " +
             fmt(total) +
-            " EGP";
+            " " +
+            T("egp");
 
           btn.href =
             "https://wa.me/" +
@@ -2712,6 +3470,9 @@
           });
         });
 
+        /* re-render the plan summary when the language changes */
+        document.addEventListener("langchange", update);
+
         const menuToggleBtn = document.getElementById("menuToggleBtn");
         const offcanvasMenu = document.getElementById("offcanvasMenu");
         const offcanvasOverlay = document.getElementById("offcanvasOverlay");
@@ -2726,12 +3487,18 @@
         function closeMenu() {
           offcanvasMenu.classList.remove("active");
           offcanvasOverlay.classList.remove("active");
-          document.body.style.overflow = "auto";
+          document.body.style.overflow = "";
         }
 
         menuToggleBtn.addEventListener("click", openMenu);
         closeMenuBtn.addEventListener("click", closeMenu);
         offcanvasOverlay.addEventListener("click", closeMenu);
+        window.addEventListener("resize", () => {
+          if (window.innerWidth > 1024) closeMenu();
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") closeMenu();
+        });
 
         const mobileLinks = offcanvasMenu.querySelectorAll(
           ".nav-links a, .nav-btn",
